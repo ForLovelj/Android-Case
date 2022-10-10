@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shareInterpolator="false"
+    >
+
+    <scale
+        android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+        android:fromXScale="1.0"
+        android:toXScale="2.0"
+        android:fromYScale="1.0"
+        android:toYScale="2.0"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:fillAfter="false"
+        android:duration="700" />
+
+    <alpha android:fromAlpha="1.0"
+        android:toAlpha="0.2"
+        android:duration="700"/>
+
+    <rotate
+        android:fromDegrees="0"
+        android:toDegrees="360"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:duration="700" />
+    <set
+        android:interpolator="@android:anim/accelerate_interpolator"
+        android:startOffset="700">
+        <scale
+            android:fromXScale="2.0"
+            android:toXScale="1.0"
+            android:fromYScale="2.0"
+            android:toYScale="1.0"
+            android:pivotX="50%"
+            android:pivotY="50%"
+            android:duration="700" />
+
+        <alpha android:fromAlpha="0.2"
+            android:toAlpha="1.0"
+            android:duration="700"/>
+        <rotate
+            android:fromDegrees="360"
+            android:toDegrees="0"
+            android:pivotX="50%"
+            android:pivotY="50%"
+            android:duration="700" />
+    </set>
+
+<!--
+android:interpolator: 插值器资源。 要应用于动画的 Interpolator。 该值必须是对指定插值器的资源的引用（而不是插值器类名称）。您可以使用平台提供的默认插值器资源，也可以创建自己的插值器资源。有关插值器的详细信息，请参阅以下说明。
+android:shareInterpolator: 布尔值。如果要在所有子元素中共用同一插值器，则为“true”。
+
+插值器
+<accelerateDecelerateInterpolator>
+变化率在开始和结束时缓慢，但在中间会加快。
+没有属性。
+
+<accelerateInterpolator>
+变化率在开始时较为缓慢，然后会加快。
+属性：
+    android:factor 浮点数。加速率（默认为 1）。
+
+<anticipateInterpolator>
+先反向变化，然后再急速正向变化。
+属性：
+    android:tension 浮点数。要应用的张力（默认为 2）。
+
+<anticipateOvershootInterpolator>
+先反向变化，再急速正向变化并超过目标值，然后以最终值结束。
+属性：
+    android:tension 浮点数。要应用的张力（默认为 2）。
+    android:extraTension    浮点数。张力要乘以的倍数（默认值为 1.5）。
+
+<bounceInterpolator>
+变化会在结束时退回。
+没有属性。
+
+<cycleInterpolator>
+按指定的循环次数重复动画。变化率符合正弦曲线图。
+属性：
+    android:cycles  整数。循环次数（默认值为 1）。
+
+<decelerateInterpolator>
+变化率开始时很快，然后减慢。
+属性：
+    android:factor  浮点数。减速率（默认值为 1）。
+
+<linearInterpolator>
+变化率恒定不变。
+没有属性。
+
+<overshootInterpolator>
+先急速正向变化，再超过最终值，然后回到最终值。
+属性：
+    android:tension 浮点数。要应用的张力（默认为 2）。
+-->
+</set>

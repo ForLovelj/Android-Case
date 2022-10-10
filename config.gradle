@@ -1,0 +1,107 @@
+ext {
+    //android开发版本配置
+
+    def versionMajor = 1
+    def versionMinor = 0
+    def versionPatch = 0
+    def versionBuild = 0 // bump for dogfood builds, public betas, etc.
+    android = [
+            compileSdkVersion: 33,
+            buildToolsVersion: "33.0.0",
+            applicationId    : "com.clow.android_case",
+            minSdkVersion    : 27,
+            targetSdkVersion : 33,
+            versionCode      : versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild,
+            versionName      : "${versionMajor}.${versionMinor}.${versionPatch}",
+    ]
+    //version配置
+    versions = [
+            appcompat : "1.5.1",
+            material  : '1.4.0',
+            junit     : "4.13.2",
+            extensions: '2.3.1',
+            constraint: '2.0.4',
+            annotation: '1.5.0',
+            room      : '2.4.3',
+            core_ktx  : '1.9.0',
+            kotlinx_coroutines : '1.6.4',
+            lifecycle_version : '2.5.1',
+            fragment_version : '1.5.3',
+            recyclerview  : '1.2.1',
+            viewpager2  : '1.0.0',
+            cardview  : '1.0.0',
+            navigation :'2.5.2'
+    ]
+
+    //jetpack
+    androidx = [
+            appcompat                       : "androidx.appcompat:appcompat:${versions['appcompat']}",
+            annotation                      : "androidx.annotation:annotation:${versions['annotation']}",
+            material                        : "com.google.android.material:material:${versions['material']}",
+            'fragment'                      : "androidx.fragment:fragment:${versions['fragment_version']}",
+            'fragment-ktx'                  : "androidx.fragment:fragment-ktx:${versions['fragment_version']}",
+            'core-ktx'                      : "androidx.core:core-ktx:${versions['core_ktx']}",
+            'constraint-layout'             : "androidx.constraintlayout:constraintlayout:${versions["constraint"]}",
+            'recyclerview'                  : "androidx.recyclerview:recyclerview:${versions['recyclerview']}",
+            'viewpager2'                    : "androidx.viewpager2:viewpager2:${versions['viewpager2']}",
+            cardview                        : "androidx.cardview:cardview:${versions['cardview']}",
+
+            //viewModel and LiveData
+            //extensions 根据 Lifecycle 2.2.0 版本说明，不再发布 lifecycle-extensions 工件。强烈建议依赖于您需要的特定 Lifecycle 工件
+//            'lifecycle-extensions'          : "androidx.lifecycle:lifecycle-extensions:2.2.0",
+            'viewmodel-ktx'                 : "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions['lifecycle_version']}",
+            'lifecycle-runtime-ktx'         : "androidx.lifecycle:lifecycle-runtime-ktx:${versions['lifecycle_version']}",
+            'livedata-ktx'                  : "androidx.lifecycle:lifecycle-livedata-ktx:${versions['lifecycle_version']}",
+            //kotlin协程
+            'kotlinx-coroutines-core'   : "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions['kotlinx_coroutines']}",
+            'kotlinx-coroutines-android'   : "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions['kotlinx_coroutines']}",
+
+    ]
+
+    test = [
+            'junit'        : "junit:junit:${versions['junit']}",
+            'runner'       : 'androidx.test:runner:1.2.0',
+            'espresso-core': 'androidx.test.espresso:espresso-core:3.2.0'
+    ]
+
+    //network
+    retrofit = [
+            retrofit        : "com.squareup.retrofit2:retrofit:2.9.0",
+            'converter-gson': "com.squareup.retrofit2:converter-gson:2.9.0",
+    ]
+
+    okhttp = [
+            okhttp                          : "com.squareup.okhttp3:okhttp:3.14.9",
+            'okhttp-logging-interceptor'    : "com.squareup.okhttp3:logging-interceptor:3.14.9",
+    ]
+
+
+    room = [
+            'room-runtime' : "androidx.room:room-runtime:${versions["room"]}",
+            'room-compiler': "androidx.room:room-compiler:${versions["room"]}",
+            'room-ktx'     : "androidx.room:room-ktx:${versions["room"]}",
+            'room-testing' : "androidx.room:room-testing:${versions["room"]}",
+    ]
+    navigation = [
+            'navigation_fragment_ktx' : "androidx.navigation:navigation-fragment-ktx:${versions["navigation"]}",
+            'navigation_dynamic_feature_fragment_ktx':   "androidx.navigation:navigation-dynamic-features-fragment:${versions["navigation"]}",
+            'navigation_ui_ktx'     : "androidx.navigation:navigation-ui-ktx:${versions["navigation"]}"
+    ]
+
+
+    //依赖第三方配置
+    dependencies = [
+            //glide图片加载
+            //material-dialogs
+            //Utils
+            utilcodex                   : 'com.blankj:utilcodex:1.31.0',
+            BRVAH                       : 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.8',
+            swiperefresh                : 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0',
+            mmkv                        : 'com.tencent:mmkv:1.0.22',
+    ]
+
+    androidxs = androidx.values()
+    network = retrofit.values()
+}
+
+

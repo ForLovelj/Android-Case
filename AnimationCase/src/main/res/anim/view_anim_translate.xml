@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<translate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="2000"
+    android:fromXDelta="0"
+    android:fromYDelta="0"
+    android:toXDelta="100%"
+    android:toYDelta="100%"
+    >
+
+<!--
+    android:fromXDelta: 浮动数或百分比。起始 X 偏移。表示方式：相对于正常位置的像素数（例如 "5"），相对于元素宽度的百分比（例如 "5%"），或相对于父项宽度的百分比（例如 "5%p"）。
+    android:toXDelta: 浮动数或百分比。结束 X 偏移。表示方式：相对于正常位置的像素数（例如 "5"），相对于元素宽度的百分比（例如 "5%"），或相对于父项宽度的百分比（例如 "5%p"）。
+    android:fromYDelta: 浮动数或百分比。起始 Y 偏移。表示方式：相对于正常位置的像素数（例如 "5"），相对于元素高度的百分比（例如 "5%"），或相对于父项高度的百分比（例如 "5%p"）。
+    android:toYDelta: 浮动数或百分比。结束 Y 偏移。表示方式：相对于正常位置的像素数（例如 "5"），相对于元素高度的百分比（例如 "5%"），或相对于父项高度的百分比（例如 "5%p"）。
+
+    公有属性 AndroidStudio上不能提示
+    android:duration: 动画持续时间
+    android:fillAfter: 为true动画结束时，View将保持动画结束时的状态
+    android:fillBefore: 为true动画结束时，View将还原到开始开始时的状态
+    android:repeatCount: 动画重复执行的次数
+    android:repeatMode: 动画重复模式 ，重复播放时restart重头开始，reverse重复播放时倒叙回放，该属性需要和android:repeatCount一起使用
+    android:interpolator: 插值器，相当于变速器，改变动画的不同阶段的执行速度
+
+-->
+</translate>

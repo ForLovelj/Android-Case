@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<scale xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fromXScale="1.0"
+    android:fromYScale="1.0"
+    android:pivotX="50%"
+    android:pivotY="50%"
+    android:toXScale="0.5"
+    android:toYScale="0.5"
+    android:duration="2000"
+    >
+
+<!--
+    android:fromXScale: 浮点数。起始 X 尺寸偏移，其中 1.0 表示不变。
+    android:toXScale: 浮点数。结束 X 尺寸偏移，其中 1.0 表示不变。
+    android:fromYScale: 浮点数。起始 Y 尺寸偏移，其中 1.0 表示不变。
+    android:toYScale: 浮点数。结束 Y 尺寸偏移，其中 1.0 表示不变。
+    android:pivotX: 浮点数。在对象缩放时要保持不变的 X 坐标。
+    android:pivotY: 浮点数。在对象缩放时要保持不变的 Y 坐标。
+
+    公有属性 AndroidStudio上不能提示
+    android:duration: 动画持续时间
+    android:fillAfter: 为true动画结束时，View将保持动画结束时的状态
+    android:fillBefore: 为true动画结束时，View将还原到开始开始时的状态
+    android:repeatCount: 动画重复执行的次数
+    android:repeatMode: 动画重复模式 ，重复播放时restart重头开始，reverse重复播放时倒叙回放，该属性需要和android:repeatCount一起使用
+    android:interpolator: 插值器，相当于变速器，改变动画的不同阶段的执行速度
+
+-->
+</scale>
