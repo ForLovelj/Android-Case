@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:ordering="together">
+    <objectAnimator
+        android:duration="2000"
+        android:propertyName="scaleX"
+        android:repeatCount="1"
+        android:repeatMode="reverse"
+        android:valueFrom="1"
+        android:valueTo="0.5"
+        android:valueType="floatType"/>
+    <objectAnimator
+        android:duration="2000"
+        android:propertyName="scaleY"
+        android:repeatCount="1"
+        android:repeatMode="reverse"
+        android:valueFrom="1"
+        android:valueTo="0.5"
+        android:valueType="floatType"/>
+    <objectAnimator
+        android:duration="2000"
+        android:propertyName="alpha"
+        android:repeatCount="1"
+        android:repeatMode="reverse"
+        android:valueFrom="1"
+        android:valueTo="0.5"
+        android:valueType="floatType"/>
+</set>
+
+<!--
+该文件必须具有一个根元素，可以是 <set>、<objectAnimator> 或 <valueAnimator>。您可以将动画元素（包括其他 <set> 元素）组合到 <set> 元素中。
+
+元素：
+<set>：容纳其他动画元素（<objectAnimator>、<valueAnimator> 或其他 <set> 元素）的容器。代表 AnimatorSet。您可以指定嵌套的 <set> 标记来
+       将动画进一步组合在一起。每个 <set> 都可以定义自己的 ordering 属性。
+属性：
+    android:ordering    关键字。指定此集合中动画的播放顺序。
+                        值	            说明
+                        sequentially	依序播放此集合中的动画
+                        together（默认）	同时播放此集合中的动画。
+
+<objectAnimator>：在特定的一段时间内为对象的特定属性创建动画。代表 ObjectAnimator。
+属性：
+    android:propertyName    字符串。必需。要添加动画效果的对象属性，通过其名称引用。例如，您可以为 View 对象指定 "alpha" 或 "backgroundColor"。
+                            但是，objectAnimator 元素不包含 target 属性，因此您无法在 XML 声明中设置要添加动画效果的对象。您必须通过调用
+                            loadAnimator() 来扩充您的动画 XML 资源，然后调用 setTarget() 来设置包含此属性的目标对象。
+
+    android:valueTo         浮点数、整数或颜色。必需。动画属性的结束值。颜色以六位十六进制数字表示（例如，#333333）。
+    android:valueFrom       浮点数、整数或颜色。动画属性的起始值。如果未指定，则动画将从属性的 get 方法获得的值开始。颜色以六位十六进制数字表示（例如，#333333）。
+    android:duration        整数。动画的时间，以毫秒为单位。默认为 300 毫秒。
+    android:startOffset     整数。调用 start() 后动画延迟的毫秒数。
+    android:repeatCount     整数。动画的重复次数。设为 "-1" 表示无限次重复，也可设为正整数。例如，值 "1" 表示动画在初次播放后重复播放一次，因此动画总共播放两次。默认值为 "0"，表示不重复。
+    android:repeatMode      整数。动画播放到结尾处的行为。android:repeatCount 必须设置为正整数或 "-1"，该属性才有效。设置为 "reverse" 可让动画在每次迭代时反向播放，设置为 "restart" 则可让动画每次从头开始循环播放。
+    android:valueType       关键字。如果值为颜色，则不要指定此属性。动画框架会自动处理颜色值
+                            值	                说明
+                            intType	        指定动画值为整数
+                            floatType（默认）	指定动画值为浮点数
+
+<animator>：在指定的时间段内执行动画。 代表 ValueAnimator。
+属性：
+    android:valueTo     浮点数、整数或颜色。必需。动画的结束值。颜色以六位十六进制数字表示（例如，#333333）。
+    android:valueFrom   浮点数、整数或颜色。必需。动画的起始值。颜色以六位十六进制数字表示（例如，#333333）。
+    android:duration    整数。动画的时间，以毫秒为单位。默认为 300 毫秒。
+    android:startOffset 整数。调用 start() 后动画延迟的毫秒数。
+    android:repeatCount 整数。动画的重复次数。设为 "-1" 表示无限次重复，也可设为正整数。例如，值 "1" 表示动画在初次播放后重复播放一次，因此动画总共播放两次。默认值为 "0"，表示不重复。
+    android:repeatMode  整数。动画播放到结尾处的行为。android:repeatCount 必须设置为正整数或 "-1"，该属性才有效。设置为 "reverse" 可让动画在每次迭代时反向播放，设置为 "restart" 则可让动画每次从头开始循环播放。
+    android:valueType   关键字。如果值为颜色，则不要指定此属性。动画框架会自动处理颜色值。
+                        值	说明
+                        intType	指定动画值为整数
+                        floatType（默认）	指定动画值为浮点数
+-->

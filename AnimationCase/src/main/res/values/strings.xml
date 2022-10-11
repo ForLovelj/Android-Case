@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">AnimationCase</string>
+
+    <string-array name="interpolators">
+        <item>Linear</item>
+        <item>Accelerate</item>
+        <item>AccelerateDecelerate</item>
+        <item>Decelerate</item>
+        <item>Quadratic Path</item>
+        <item>Cubic Path</item>
+        <item>Bounce</item>
+        <item>Overshoot</item>
+        <item>Anticipate</item>
+    </string-array>
 </resources>

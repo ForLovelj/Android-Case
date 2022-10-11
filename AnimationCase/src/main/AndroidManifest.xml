@@ -19,8 +19,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.AnimationActivity"/>
         <activity android:name=".ui.AnimatorActivity"/>
+        <activity android:name=".ui.InterpolatorActivity" />
     </application>
 
 </manifest>

@@ -1,13 +1,15 @@
-package com.clow.animation_case.ui
+package com.clow.animation_case.ui.Fragment
 
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
+import android.view.View
 import android.view.animation.*
 import androidx.core.content.ContextCompat
+import com.blankj.utilcode.util.LogUtils
 import com.clow.animation_case.R
-import com.clow.animation_case.databinding.ActivityAnimationBinding
-import com.clow.baselib.base.BaseActivity
+import com.clow.animation_case.databinding.FragmentAnimationBinding
+import com.clow.baselib.base.BaseFragment
 
 /**
  * Created by clow
@@ -25,13 +27,14 @@ import com.clow.baselib.base.BaseActivity
  *          在 Java 中：R.anim.filename
  *          在 XML 中：@[package:]anim/filename
  *
- * Date: 2022/8/26.
+ * Date: 2022/10/11.
  */
-class AnimationActivity: BaseActivity<ActivityAnimationBinding>() {
+class AnimationFragment: BaseFragment<FragmentAnimationBinding>() {
 
-    override fun layoutId() = R.layout.activity_animation
+    override fun layoutId() = R.layout.fragment_animation
 
-    override fun initView(savedInstanceState: Bundle?) {
+    override fun initView(view: View, savedInstanceState: Bundle?) {
+
         mViewBinding.btAlpha.setOnClickListener {
             alpha(1)
         }
@@ -56,24 +59,41 @@ class AnimationActivity: BaseActivity<ActivityAnimationBinding>() {
             frame(1)
         }
     }
-
     private fun alpha(type: Int = 0) {
         val anim = if (type == 0) {
             //xml 实现
-            AnimationUtils.loadAnimation(this,R.anim.view_anim_alpha)
+            AnimationUtils.loadAnimation(requireContext(),R.anim.view_anim_alpha)
         } else {
             //代码实现
             AlphaAnimation(1.0f,0f).apply {
                 duration = 2000
             }
         }
+        //动画监听器
+        anim.setAnimationListener(object : Animation.AnimationListener{
+            override fun onAnimationStart(animation: Animation?) {
+                // 动画开始
+                LogUtils.i("onAnimationStart...")
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+                // 动画结束
+                LogUtils.i("onAnimationEnd...")
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {
+                // 动画重复
+                LogUtils.i("onAnimationRepeat...")
+            }
+
+        })
         mViewBinding.ivMusic.startAnimation(anim)
     }
 
     private fun scale(type: Int = 0) {
         val anim = if (type == 0) {
             //xml 实现
-            AnimationUtils.loadAnimation(this,R.anim.view_anim_scale)
+            AnimationUtils.loadAnimation(requireContext(),R.anim.view_anim_scale)
         } else {
             //代码实现
             ScaleAnimation(
@@ -92,7 +112,7 @@ class AnimationActivity: BaseActivity<ActivityAnimationBinding>() {
     private fun rotation(type: Int = 0) {
         val anim = if (type == 0) {
             //xml 实现
-            AnimationUtils.loadAnimation(this,R.anim.view_anim_rotation)
+            AnimationUtils.loadAnimation(requireContext(),R.anim.view_anim_rotation)
         } else {
             //代码实现
             RotateAnimation(
@@ -110,7 +130,7 @@ class AnimationActivity: BaseActivity<ActivityAnimationBinding>() {
     private fun translate(type: Int = 0) {
         val anim = if (type == 0) {
             //xml 实现
-            AnimationUtils.loadAnimation(this,R.anim.view_anim_translate)
+            AnimationUtils.loadAnimation(requireContext(),R.anim.view_anim_translate)
         } else {
             //代码实现
             TranslateAnimation(
@@ -128,7 +148,7 @@ class AnimationActivity: BaseActivity<ActivityAnimationBinding>() {
     private fun set(type: Int = 0) {
         val anim = if (type == 0) {
             //xml 实现
-            AnimationUtils.loadAnimation(this,R.anim.view_anim_set)
+            AnimationUtils.loadAnimation(requireContext(),R.anim.view_anim_set)
         } else {
             //代码实现
             val alphaAnim = AlphaAnimation(1.0f,0f).apply {
@@ -185,8 +205,8 @@ class AnimationActivity: BaseActivity<ActivityAnimationBinding>() {
             //代码实现
             val animationDrawable = AnimationDrawable()
             for (i in 1..3) {
-                val resId = resources.getIdentifier("ic_music$i", "drawable", packageName)
-                val drawable = ContextCompat.getDrawable(this, resId)
+                val resId = resources.getIdentifier("ic_music$i", "drawable", requireContext().packageName)
+                val drawable = ContextCompat.getDrawable(requireContext(), resId)
                 animationDrawable.addFrame(drawable!!,300)
             }
             animationDrawable.isOneShot = true

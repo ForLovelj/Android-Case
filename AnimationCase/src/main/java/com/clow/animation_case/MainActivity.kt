@@ -1,50 +1,55 @@
 package com.clow.animation_case
 
-import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.GridLayoutManager
-import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.viewholder.BaseViewHolder
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.clow.animation_case.databinding.ActivityMainBinding
-import com.clow.animation_case.ui.AnimationActivity
+import com.clow.animation_case.ui.Fragment.AnimationFragment
+import com.clow.animation_case.ui.Fragment.AnimatorFragment
+import com.clow.animation_case.ui.Fragment.TabFragment
 import com.clow.baselib.base.BaseActivity
+import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
-    private val mAdapter by lazy {
-        MainAdapter()
-    }
     private val mNav = mutableListOf("视图动画","属性动画")
+
+    private val mTabAdapter by lazy {
+        TabAdapter(this,mNav)
+    }
 
     override fun layoutId() = R.layout.activity_main
 
     override fun initView(savedInstanceState: Bundle?) {
-        with(mViewBinding.recyclerView) {
-            layoutManager = GridLayoutManager(this@MainActivity,3)
-            adapter = mAdapter
-        }
-        mAdapter.setOnItemClickListener { adapter, view, position ->
-            val value = mAdapter.data[position]
-            when (position) {
-                0 -> {
-                    startActivity(Intent(this, AnimationActivity::class.java))
-                }
-            }
-        }
-        mAdapter.setNewInstance(mNav)
-        initListener()
-    }
 
-    private fun initListener() {
-
+        with(mViewBinding.viewPager2){
+            adapter = mTabAdapter
+            isUserInputEnabled = false //禁止滑动
+        }
+        //ViewPager2默认只加载当前页面，相当于官方处理了Fragment的懒加载问题
+        //此时当你滑动ViewPager2时，滑动到某个Fragment页面才会加载，执行onCreateView()方法，
+        //但是当你手动点击TabLayout时，此时懒加载就会失效，onCreateView()会被执行多次，
+        //原因就是…此时ViewPager2默认是平滑滚动的，滚动滑过的Fragment都会被加载，
+        //第二个boolean参数为smoothScroll 填false 这时点击 哪个tab 就会创建 哪个 fragment
+        TabLayoutMediator(mViewBinding.tabLayout,mViewBinding.viewPager2,true,false) { tab, position ->
+            tab.text = mNav[position]
+        }.attach()
 
     }
 
 }
 
-class MainAdapter: BaseQuickAdapter<String,BaseViewHolder>(R.layout.item_main) {
+class TabAdapter(activity: FragmentActivity,val titles: MutableList<String>) : FragmentStateAdapter(activity) {
 
-    override fun convert(holder: BaseViewHolder, item: String) {
-        holder.setText(R.id.tvName,item)
+    override fun getItemCount() = titles.size
+
+    override fun createFragment(position: Int): Fragment {
+        return when(position){
+            0 -> AnimationFragment()
+            1 -> AnimatorFragment()
+            else -> TabFragment.newInstance(titles[position])
+        }
     }
+
 }
