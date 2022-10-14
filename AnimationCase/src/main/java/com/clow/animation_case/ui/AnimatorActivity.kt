@@ -6,7 +6,9 @@ import android.os.Bundle
 import com.blankj.utilcode.util.LogUtils
 import com.clow.animation_case.R
 import com.clow.animation_case.databinding.ActivityAnimatorBinding
+import com.clow.animation_case.ui.data.ProgressData
 import com.clow.baselib.base.BaseActivity
+import com.clow.baselib.ext.dpf
 
 
 /**
@@ -42,11 +44,27 @@ class AnimatorActivity : BaseActivity<ActivityAnimatorBinding>() {
         }
 
         mViewBinding.btObjectAnim.setOnClickListener {
-            set()
+            animSet()
         }
 
         mViewBinding.btCustom.setOnClickListener {
             animCustom()
+        }
+
+        mViewBinding.btTypeEvaluator.setOnClickListener {
+            animEvaluator()
+        }
+
+        mViewBinding.btPropertyValuesHolder.setOnClickListener {
+            animPropertyValuesHolder()
+        }
+
+        mViewBinding.btFrame.setOnClickListener {
+            animKeyFrame()
+        }
+
+        mViewBinding.btViewPropertyAnimator.setOnClickListener {
+            animViewPropertyAnimator()
         }
     }
 
@@ -77,7 +95,7 @@ class AnimatorActivity : BaseActivity<ActivityAnimatorBinding>() {
     }
 
 
-    private fun set(type: Int = 0) {
+    private fun animSet(type: Int = 0) {
         val set = if (type == 0) {
             //xml方式实现
             (AnimatorInflater.loadAnimator(
@@ -149,11 +167,118 @@ class AnimatorActivity : BaseActivity<ActivityAnimatorBinding>() {
      *  使用您有权更改的封装容器类，让该封装容器使用有效的 setter 方法接收值并将其转发给原始对象。
      *  改用 ValueAnimator。
      */
-    private fun animCustom(){
-        ObjectAnimator.ofFloat(mViewBinding.circleProgressView,"progress",0f,360f).apply {
+    private fun animCustom() {
+        ObjectAnimator.ofFloat(mViewBinding.circleProgressView, "progress", 0f, 100f).apply {
+            duration = 3000
+            start()
+        }
+
+    }
+
+    /**
+     * 自定义TypeEvaluator 来执行复杂对象的动画过程
+     */
+    private fun animEvaluator() {
+        //自定义进度和颜色变化的TypeEvaluator
+        val evaluator = object : TypeEvaluator<ProgressData> {
+
+            private val progressData = ProgressData()
+            private val sInstance = ArgbEvaluator()
+
+            override fun evaluate(
+                fraction: Float,
+                startValue: ProgressData,
+                endValue: ProgressData
+            ): ProgressData {
+                //fraction范围为0到1，表示动画执行过程中已完成程度。
+                //泛型T即为动画执行的属性类型 这儿为float
+                //返回的值为 动画属性随fraction的变化值
+                progressData.progress =
+                    startValue.progress + fraction * (endValue.progress - startValue.progress)
+                //借助系统的ArgbEvaluator来实现颜色随fraction变换值
+                progressData.color =
+                    sInstance.evaluate(fraction, startValue.color, endValue.color) as Int
+                return progressData
+
+            }
+
+        }
+
+
+        val progressData1 = ProgressData(0f, Color.BLUE)
+        val progressData2 = ProgressData(100f, Color.GREEN)
+
+        ObjectAnimator.ofObject(
+            mViewBinding.circleProgressView,
+            "progressData",
+            evaluator,
+            progressData1,
+            progressData2
+        ).apply {
             duration = 3000
             start()
         }
     }
 
+    /**
+     * 使用PropertyValuesHolder来构建动画效果
+     */
+    private fun animPropertyValuesHolder() {
+        val scaleX = PropertyValuesHolder.ofFloat("scaleX", 1f, 0.5f)
+        val scaleY = PropertyValuesHolder.ofFloat("scaleY", 1f, 0.5f)
+        val alpha = PropertyValuesHolder.ofFloat("alpha", 1f, 0.5f)
+        ObjectAnimator.ofPropertyValuesHolder(mViewBinding.ivMusic, scaleX, scaleY, alpha).apply {
+            duration = 2000
+            start()
+        }
+
+    }
+
+    /**
+     *  Keyframe 对象由时间值对组成，用于在动画的特定时间定义特定的状态。每个关键帧还可以用自己的插值器控制动画在上一关键帧时间
+     *  和此关键帧时间之间的时间间隔内的行为。
+     *
+     *  要实例化 Keyframe 对象，您必须使用它的任一工厂方法（ofInt()、ofFloat() 或 ofObject()）来获取类型合适的 。
+     *  然后，通过调用 ofKeyframe() 工厂方法来获取 PropertyValuesHolder 对象。获取对象后，您可以通过传入 PropertyValuesHolder
+     *  对象以及要添加动画效果的对象来获取 Animator。以下代码段演示了如何做到这一点：
+     *
+     */
+    private fun animKeyFrame() {
+        // 在 0% 处开始
+        val kf1 = Keyframe.ofFloat(0f, 0f)
+        // 时间经过 50% 的时候，动画(值)完成度 100%
+        val kf2 = Keyframe.ofFloat(0.5f, 100f)
+        // 时间经过 100% 的时候，动画完成度倒退到 50%
+        val kf3 = Keyframe.ofFloat(1f, 50f)
+        val holder = PropertyValuesHolder.ofKeyframe("progress", kf1, kf2, kf3)
+        ObjectAnimator.ofPropertyValuesHolder(mViewBinding.circleProgressView, holder).apply {
+            duration = 2000
+            start()
+        }
+    }
+
+
+    /**
+     * ViewPropertyAnimator
+     */
+    private fun animViewPropertyAnimator() {
+        val x = mViewBinding.ivMusic.x
+        val y = mViewBinding.ivMusic.y
+        mViewBinding.ivMusic.animate()
+            .x(50f.dpf)
+            .y(50f.dpf)
+            .rotationBy(360f)
+            .alpha(0f)
+            .setDuration(2000)
+            .withEndAction {
+                mViewBinding.ivMusic.animate()
+                    .x(x)
+                    .y(y)
+                    .rotationBy(-360f)
+                    .alpha(1f)
+                    .setDuration(2000)
+                    .start()
+            }
+            .start()
+    }
 }

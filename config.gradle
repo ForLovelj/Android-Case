@@ -30,6 +30,7 @@ ext {
             recyclerview  : '1.2.1',
             viewpager2  : '1.0.0',
             cardview  : '1.0.0',
+            flexbox  : '3.0.0',
             navigation :'2.5.2'
     ]
 
@@ -45,6 +46,7 @@ ext {
             'recyclerview'                  : "androidx.recyclerview:recyclerview:${versions['recyclerview']}",
             'viewpager2'                    : "androidx.viewpager2:viewpager2:${versions['viewpager2']}",
             cardview                        : "androidx.cardview:cardview:${versions['cardview']}",
+            flexbox                         : "com.google.android.flexbox:flexbox:${versions['flexbox']}",
 
             //viewModel and LiveData
             //extensions 根据 Lifecycle 2.2.0 版本说明，不再发布 lifecycle-extensions 工件。强烈建议依赖于您需要的特定 Lifecycle 工件

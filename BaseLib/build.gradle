@@ -40,6 +40,7 @@ dependencies {
     api rootProject.ext.androidx.recyclerview
     api rootProject.ext.androidx.viewpager2
     api rootProject.ext.androidx.cardview
+    api rootProject.ext.androidx.flexbox
     api rootProject.ext.androidx['constraint-layout']
     api rootProject.ext.androidx['core-ktx']
     api rootProject.ext.androidx['viewmodel-ktx']

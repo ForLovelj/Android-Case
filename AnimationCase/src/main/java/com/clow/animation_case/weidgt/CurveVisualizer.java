@@ -1,5 +1,6 @@
 package com.clow.animation_case.weidgt;
 
+import android.util.Log;
 import android.view.View;
 
 import android.content.Context;
@@ -54,7 +55,7 @@ public class CurveVisualizer extends View {
     // 当它们被用户移动时 这个回调用于用控制点的新值更新UI
     ControlPointCallback mPathCallback;
 
-    // 动画完成度
+    // 动画的时间完成度
     float mFraction;
 
     // 控制点和动画对象的大小
@@ -219,10 +220,11 @@ public class CurveVisualizer extends View {
             canvas.drawLine(x, 0, x, height, mGridPaint);
         }
 
-        // 绘制插值器的时序曲线
+        // 绘制插值器的时序曲线（x轴：时间完成度  y轴：动画完成度）动画值随时间变化曲线
         float lastX = 0;
         float lastY = mInterpolator.getInterpolation(0);
         for (float x = 0; x <= 1f; x += .01f) {
+            //获取插值分数
             float y = mInterpolator.getInterpolation(x);
             canvas.drawLine(lastX * width, height - (height * lastY),
                     width * x, height - (height * y), mCurvePaint);
@@ -242,7 +244,7 @@ public class CurveVisualizer extends View {
             }
         }
 
-        // 绘制球的位置给出当前动画分数
+        // 绘制球的位置 横坐标动画分数（时间线0-1）  纵坐标动画的插值分数（动画实际完成度）
         float fractionY = mInterpolator.getInterpolation(mFraction);
         float centerX = getWidth() * mFraction;
         float centerY = getHeight() * (1 - fractionY);
