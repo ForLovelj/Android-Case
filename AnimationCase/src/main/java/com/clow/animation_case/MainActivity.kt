@@ -7,13 +7,14 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.clow.animation_case.databinding.ActivityMainBinding
 import com.clow.animation_case.ui.Fragment.AnimationFragment
 import com.clow.animation_case.ui.Fragment.AnimatorFragment
+import com.clow.animation_case.ui.Fragment.CircularRevealFragment
 import com.clow.animation_case.ui.Fragment.TabFragment
 import com.clow.baselib.base.BaseActivity
 import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
-    private val mNav = mutableListOf("视图动画","属性动画")
+    private val mNav = mutableListOf("视图动画","属性动画","揭露动画效果")
 
     private val mTabAdapter by lazy {
         TabAdapter(this,mNav)
@@ -48,6 +49,7 @@ class TabAdapter(activity: FragmentActivity,val titles: MutableList<String>) : F
         return when(position){
             0 -> AnimationFragment()
             1 -> AnimatorFragment()
+            2 -> CircularRevealFragment()
             else -> TabFragment.newInstance(titles[position])
         }
     }

@@ -192,6 +192,10 @@ class AnimationFragment: BaseFragment<FragmentAnimationBinding>() {
         mViewBinding.ivMusic.startAnimation(anim)
     }
 
+    /**
+     *  AnimationDrawable 调用的 start() 方法不能在 Activity 的 onCreate() 方法期间调用，因为 AnimationDrawable 尚未完全附加到窗口。
+     *  如果想立即播放动画而无需互动，那么可能需要从 Activity 中的 onStart() 方法进行调用，该方法会在 Android 在屏幕上呈现视图时调用
+     */
     private fun frame(type: Int = 0) {
         mViewBinding.ivMusic.setImageResource(0)
         if (type == 0) {

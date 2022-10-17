@@ -62,7 +62,11 @@ import java.lang.reflect.Constructor
  *  <overshootInterpolator>
  *  先急速正向变化，再超过最终值，然后回到最终值。
  *  属性：
-android:tension 浮点数。要应用的张力（默认为 2）。
+ *  android:tension 浮点数。要应用的张力（默认为 2）。
+ *
+ *  <PathInterpolator> Android5.0引入
+ *  基于贝塞尔曲线或 Path 对象。此插值器在一个 1x1 的正方形内指定一个动作曲线，定位点位于 (0,0) 和 (1,1)，而控制点则使用构造函数参数指定
+ *  可以自定以动画曲线
  * Date: 2022/10/11.
  */
 class InterpolatorActivity: BaseActivity<ActivityInterpolatorBinding>() {
