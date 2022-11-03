@@ -20,7 +20,7 @@ import java.lang.reflect.Constructor
 /**
  * Created by clow
  * Des: 动画插值器case
- * 插值器
+ * 插值器 ：在动画时间内，插值器会根据自身改变动画的值，使动画具有不同的模型
  *  <accelerateDecelerateInterpolator>
  *  变化率在开始和结束时缓慢，但在中间会加快。
  *  没有属性。
@@ -65,8 +65,8 @@ import java.lang.reflect.Constructor
  *  android:tension 浮点数。要应用的张力（默认为 2）。
  *
  *  <PathInterpolator> Android5.0引入
- *  基于贝塞尔曲线或 Path 对象。此插值器在一个 1x1 的正方形内指定一个动作曲线，定位点位于 (0,0) 和 (1,1)，而控制点则使用构造函数参数指定
- *  可以自定以动画曲线
+ *  此插值器在一个 1x1 的正方形内指定一个动作曲线，定位点位于 (0,0) 和 (1,1)，而控制点则使用构造函数参数指定
+ *  可以定制出任何你想要的速度模型。定制的方式是使用一个 Path 对象来绘制出你要的动画完成度 / 时间完成度曲线
  * Date: 2022/10/11.
  */
 class InterpolatorActivity: BaseActivity<ActivityInterpolatorBinding>() {
