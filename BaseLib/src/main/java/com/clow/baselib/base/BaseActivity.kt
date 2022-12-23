@@ -1,5 +1,6 @@
 package com.clow.baselib.base
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +18,7 @@ abstract class BaseActivity<VB: ViewBinding>: AppCompatActivity() {
     abstract fun layoutId(): Int
 
     lateinit var mViewBinding: VB
+    lateinit var mContext: Context
 
     /**
      * 创建DataBinding
@@ -28,7 +30,7 @@ abstract class BaseActivity<VB: ViewBinding>: AppCompatActivity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        mContext = this
         setContentView(initViewBinding())
         initView(savedInstanceState)
     }

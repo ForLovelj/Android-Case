@@ -17,3 +17,4 @@ rootProject.name = "Android-Case"
 include ':app'
 include ':AnimationCase'
 include ':BaseLib'
+include ':CustomViewCase'

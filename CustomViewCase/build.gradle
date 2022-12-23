@@ -4,22 +4,21 @@ plugins {
 }
 
 android {
-    println(rootProject.ext.android)
     compileSdk rootProject.ext.android.compileSdkVersion
 
     defaultConfig {
-        applicationId "com.clow.animation_case"
+        applicationId "com.clow.customviewcase"
         minSdk rootProject.ext.android.minSdkVersion
         targetSdk rootProject.ext.android.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildFeatures {
         viewBinding = true
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -38,9 +37,7 @@ android {
 dependencies {
 
     implementation project(":BaseLib")
-    //动画物理特性的支持库
-    implementation 'androidx.dynamicanimation:dynamicanimation:1.1.0-alpha03'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
 }
