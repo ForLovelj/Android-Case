@@ -22,6 +22,19 @@ class SimpleView : View {
         isAntiAlias = true  //抗锯齿开关
     }
 
+    private val mTextPaint = Paint().apply {
+        style = Paint.Style.FILL  //设置绘制模式
+        color = Color.BLACK //设置颜色
+        textSize = 40f      //设置文字大小
+        isAntiAlias = true  //抗锯齿开关
+        textAlign = Paint.Align.LEFT //设置文字对齐方式
+//        isUnderlineText = true //设置文本的下划线
+//        isStrikeThruText = true //设置文本的删除线
+//        isFakeBoldText = true   //设置文本粗体
+//        textSkewX = -0.5F //设置斜体
+//        setShadowLayer(5F,5F,5F,Color.BLUE) //设置文字阴影
+    }
+
     private var mType = -1
 
     constructor(context: Context) :
@@ -63,6 +76,10 @@ class SimpleView : View {
             12 -> drawArc(canvas!!)
             13 -> drawBitmap(canvas!!)
             14 -> drawPicture(canvas!!)
+            15 -> drawText(canvas!!)
+            16 -> drawTextRun(canvas!!)
+            17 -> drawTextOnPath(canvas!!)
+            18 -> drawPath(canvas!!)
         }
         canvas?.restore()
 
@@ -315,23 +332,23 @@ class SimpleView : View {
         mPaint.strokeWidth = 20f    //设置画笔宽度为20px
 
         //以(400,400)为起点，(700,700)为终点绘制一条直线
-        canvas.drawLine(400f,400f,700f,700f,mPaint)
+        canvas.drawLine(400f, 400f, 700f, 700f, mPaint)
 
         //批量绘制
         canvas.drawLines(
             floatArrayOf(
-                100f,800f,400f,800f,
-                100f,900f,400f,900f
-            ),mPaint
+                100f, 800f, 400f, 800f,
+                100f, 900f, 400f, 900f
+            ), mPaint
         )
 
         mPaint.color = Color.RED    //画笔设置为红色
         mPaint.strokeCap = Paint.Cap.ROUND  //端点设置为圆头
         canvas.drawLines(
             floatArrayOf(
-                100f,800f,400f,800f,
-                100f,900f,400f,900f,
-                100f,1000f,400f,1000f,
+                100f, 800f, 400f, 800f,
+                100f, 900f, 400f, 900f,
+                100f, 1000f, 400f, 1000f,
             ),
             8,//跳过8个数
             4,//绘制4个数（一条线）
@@ -348,22 +365,22 @@ class SimpleView : View {
         mPaint.strokeWidth = 20f    //设置画笔宽度为20px
 
         //第一种
-        canvas.drawRect(100f,100f,600f,400f,mPaint)
+        canvas.drawRect(100f, 100f, 600f, 400f, mPaint)
 
         //第二种
         canvas.drawRect(
-            Rect(100,500,600,800),
+            Rect(100, 500, 600, 800),
             mPaint
         )
 
         //第三种
         canvas.drawRect(
-            RectF(100f,900f,600f,1200f),
+            RectF(100f, 900f, 600f, 1200f),
             mPaint
         )
 
         mPaint.style = Paint.Style.STROKE //设置描边模式
-        canvas.drawRect(100f,1300f,600f,1600f,mPaint)
+        canvas.drawRect(100f, 1300f, 600f, 1600f, mPaint)
     }
 
     /**
@@ -375,36 +392,37 @@ class SimpleView : View {
         mPaint.strokeWidth = 20f    //设置画笔宽度为20px
 
         //第一种 left, top, right, bottom 是四条边的坐标，rx 和 ry 是圆角的横向半径和纵向半径
-        canvas.drawRoundRect(100f,100f,600f,400f,30f,30f,mPaint)
+        canvas.drawRoundRect(100f, 100f, 600f, 400f, 30f, 30f, mPaint)
 
         //第二种
         canvas.drawRoundRect(
-            RectF(100f,500f,600f,800f),
-            30f,30f,mPaint)
+            RectF(100f, 500f, 600f, 800f),
+            30f, 30f, mPaint
+        )
 
         mPaint.style = Paint.Style.STROKE //设置描边模式
-        canvas.drawRoundRect(100f,900f,600f,1200f,30f,30f,mPaint)
+        canvas.drawRoundRect(100f, 900f, 600f, 1200f, 30f, 30f, mPaint)
     }
 
     /**
      * 绘制椭圆
      */
-    private fun drawOval(canvas: Canvas){
+    private fun drawOval(canvas: Canvas) {
         mPaint.style = Paint.Style.FILL //设置填充模式
         mPaint.color = Color.BLACK  //设置画笔颜色
         mPaint.strokeWidth = 20f    //设置画笔宽度为20px
 
         //第一种 left, top, right, bottom 是这个椭圆的左、上、右、下四个边界点的坐标
-        canvas.drawOval(100f,100f,600f,400f,mPaint)
+        canvas.drawOval(100f, 100f, 600f, 400f, mPaint)
 
         //第二种
         canvas.drawOval(
-            RectF(100f,500f,600f,800f),
+            RectF(100f, 500f, 600f, 800f),
             mPaint
         )
 
         mPaint.style = Paint.Style.STROKE //设置描边模式
-        canvas.drawOval(100f,900f,600f,1200f,mPaint)
+        canvas.drawOval(100f, 900f, 600f, 1200f, mPaint)
     }
 
     /**
@@ -416,11 +434,11 @@ class SimpleView : View {
         mPaint.strokeWidth = 20f    //设置画笔宽度为20px
 
         // 绘制一个圆心坐标在(500,500)，半径为300 的圆。
-        canvas.drawCircle(500f,500f,300f,mPaint)
+        canvas.drawCircle(500f, 500f, 300f, mPaint)
 
         mPaint.style = Paint.Style.STROKE //设置描边模式
         //画笔为描边模式绘制出来的是一个圆环
-        canvas.drawCircle(500f,1200f,300f,mPaint)
+        canvas.drawCircle(500f, 1200f, 300f, mPaint)
     }
 
     /**
@@ -444,7 +462,7 @@ class SimpleView : View {
     private fun drawBitmap(canvas: Canvas) {
         val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.beauty)
         //第一种
-        canvas.drawBitmap(bitmap,Matrix(),mPaint)
+        canvas.drawBitmap(bitmap, Matrix(), mPaint)
 
         //第二种
 //        canvas.drawBitmap(bitmap,200f,200f,mPaint)
@@ -464,16 +482,16 @@ class SimpleView : View {
      */
     private fun drawBitmapDemo(canvas: Canvas) {
         frame++
-        if(level >= 14)return
+        if (level >= 14) return
         //每两帧绘制一次爆炸
         if (frame % 2 == 0) {
             //爆炸效果由14个片段组成 算出每个片段的宽度
             val segmentWidth = boomBitmap.width / 14
             val left = level * segmentWidth
 
-            val src = Rect(left,0,left+segmentWidth,boomBitmap.height)
-            val dst = Rect(300,300,300+segmentWidth,300+boomBitmap.height)
-            canvas.drawBitmap(boomBitmap,src,dst,mPaint)
+            val src = Rect(left, 0, left + segmentWidth, boomBitmap.height)
+            val dst = Rect(300, 300, 300 + segmentWidth, 300 + boomBitmap.height)
+            canvas.drawBitmap(boomBitmap, src, dst, mPaint)
             level++
         }
         invalidate()
@@ -499,7 +517,7 @@ class SimpleView : View {
         // 位移
 //        canvas.translate(250f,250f)
         // 绘制一个圆
-        canvas.drawCircle(0f,0f,100f,paint)
+        canvas.drawCircle(0f, 0f, 100f, paint)
         //结束录制
         picture.endRecording()
         return picture
@@ -511,14 +529,136 @@ class SimpleView : View {
     private fun drawPicture(canvas: Canvas) {
         val picture = recording()
         //1. 直接绘制
-        canvas.translate(250f,250f)
+        canvas.translate(250f, 250f)
         canvas.drawPicture(picture)
 
         //2. 绘制到目标矩形  可以看到绘制内容根据矩形区域被放大了一倍
-        canvas.translate(250f,250f)
+        canvas.translate(250f, 250f)
         canvas.drawPicture(
             picture,
-            RectF(0f,0f,picture.width.toFloat()*2,picture.width.toFloat() * 2)
+            RectF(0f, 0f, picture.width.toFloat() * 2, picture.width.toFloat() * 2)
         )
+    }
+
+    /**
+     * drawText
+     */
+    private fun drawText(canvas: Canvas) {
+        // 文本(要绘制的内容)
+        val str = "abcdefghijk"
+        mTextPaint.textSize = 40f
+        // 参数分别为 (文本 基线x 基线y 画笔)
+        canvas.drawText(str, 200f, 200f, mTextPaint)
+
+        mPaint.style = Paint.Style.FILL //设置填充模式
+        mPaint.color = Color.RED  //设置画笔颜色
+        canvas.drawLine(200f, 200f, 800f, 200f, mPaint)  //绘制基线
+
+        mTextPaint.textSize = 60f
+        // 参数分别为 (字符串 开始截取位置 结束截取位置 基线x 基线y 画笔)
+        canvas.drawText(str, 1, 7, 200f, 400f, mTextPaint)
+        canvas.drawLine(200f, 400f, 800f, 400f, mPaint)  //绘制基线
+
+        // 字符数组(要绘制的内容)
+        val chars = "abcdefghijk".toCharArray()
+        mTextPaint.textSize = 80f
+        // 参数为 (字符数组 起始坐标 截取长度 基线x 基线y 画笔)
+        canvas.drawText(chars, 1, 7, 200f, 600f, mTextPaint)
+        canvas.drawLine(200f, 600f, 800f, 600f, mPaint)  //绘制基线
+    }
+
+    /**
+     * drawTextRun
+     */
+    private fun drawTextRun(canvas: Canvas) {
+        val str = "ABCDEFG"
+        // text：要绘制的文字
+        // start：从那个字开始绘制
+        // end：绘制到哪个字结束
+        // contextStart：上下文的起始位置。
+        // contextStart 需要小于等于 start
+        // contextEnd：上下文的结束位置。contextEnd 需要大于等于 end
+        // x：文字左边的坐标
+        // y：文字的基线坐标
+        // isRtl：是否是 RTL（Right-To-Left，从右向左）
+        canvas.drawTextRun(str, 2, 4, 0, 6, 200f, 200f, false, mTextPaint)
+
+        canvas.drawTextRun(str, 2, 4, 0, 6, 200f, 400f, true, mTextPaint)
+    }
+
+    /**
+     * drawTextOnPath
+     */
+    private fun drawTextOnPath(canvas: Canvas) {
+        //创建path对象
+        val path = Path().apply {
+            //移动到点(200,200)
+            moveTo(200f, 200f)
+            //设置path轨迹 3次贝塞尔曲线
+            cubicTo(300f, 500f, 400f, 300f, 500f, 500f)
+        }
+        mPaint.color = Color.RED
+        //绘制path
+        canvas.drawPath(path, mPaint)
+        //根据path绘制文本 其中hOffset和vOffset它们是文字相对于 Path 的水平偏移量和竖直偏移量
+        canvas.drawTextOnPath("在path上绘制文本", path, 50f, 0f, mTextPaint)
+    }
+
+    /**
+     * 绘制路径
+     */
+    private fun drawPath(canvas: Canvas) {
+        val canvasWidth = canvas.width.toFloat()
+        val canvasHeight = canvas.height.toFloat()
+        //画布原点平移到中心
+        canvas.translate(canvasWidth / 2, canvasHeight / 2)
+        //绘制坐标系
+        mPaint.style = Paint.Style.STROKE
+        mPaint.setColor(Color.RED)
+        mPaint.strokeWidth = 4f
+        canvas.drawLine(-canvasWidth / 2, 0f, canvasWidth / 2, 0f, mPaint)//x轴
+        canvas.drawLine(0f, -canvasHeight / 2, 0f, canvasHeight / 2, mPaint)//y轴
+
+        mPaint.color = Color.BLACK
+        //lineTo rLineTo
+//        val path = Path().apply {
+//            lineTo(200f,200f)   //从原点连线到点(200,200)
+//            lineTo(200f,0f)     //从点(200,200)连线到点(200,0)
+//
+//            rLineTo(200f,200f)//以点(200,0)为原点 连线到点(200,200)
+//        }
+
+        //moveTo rMoveTo
+//        val path = Path().apply {
+//            lineTo(200f,200f)   //从原点连线到点(200,200)
+//
+//            moveTo(200f,-0f)  //移动到点(200,0)
+//
+//            lineTo(200f,200f)     //从点(200,200)连线到点(200,0)
+//
+//            rMoveTo(200f,0f)  //以点(200,200)为原点 移动到点(200,0)
+//
+//            rLineTo(0f,-200f)       //以点(200,0)为原点 连线到点(0,-200)
+//        }
+
+        //绘制曲线
+//        val path = Path().apply {
+//            //从原点绘制贝塞尔曲线，前后2个坐标分别是控制点，和终点
+//            quadTo(100f,100f,200f,0f)
+//            //以终点为相对原点，再绘制
+//            rQuadTo(100f,-100f,200f,0f)
+//        }
+
+        //绘制圆弧
+        val path = Path().apply {
+            lineTo(100f, 100f)
+            arcTo(
+                RectF(100f, 100f, 300f, 300f),
+                -90f, 90f, true
+            ) // 强制移动到弧形起点（无痕迹）
+
+//            addArc(RectF(100f, 100f, 300f, 300f), -90f, 90f)// <-- 和上面一句作用等价
+        }
+        canvas.drawPath(path, mPaint)
     }
 }

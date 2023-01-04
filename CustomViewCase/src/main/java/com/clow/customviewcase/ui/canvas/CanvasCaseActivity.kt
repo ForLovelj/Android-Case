@@ -23,6 +23,7 @@ class CanvasCaseActivity: BaseActivity<ActivityCanvasCaseBinding>() {
         "绘制坐标系","平移画布","缩放画布","旋转画布","错切画布",
         "drawColor","drawPoint","drawLine","drawRect","drawRoundRect",
         "drawOval","drawCircle","drawArc","drawBitmap","drawPicture",
+        "drawText","drawTextRun","drawTextOnPath","drawPath",
     )
 
     override fun layoutId() = R.layout.activity_canvas_case
