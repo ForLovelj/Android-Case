@@ -5,6 +5,7 @@ import android.graphics.*
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
+import com.blankj.utilcode.util.LogUtils
 import com.clow.customviewcase.R
 
 /**
@@ -616,10 +617,12 @@ class SimpleView : View {
         mPaint.style = Paint.Style.STROKE
         mPaint.setColor(Color.RED)
         mPaint.strokeWidth = 4f
-        canvas.drawLine(-canvasWidth / 2, 0f, canvasWidth / 2, 0f, mPaint)//x轴
-        canvas.drawLine(0f, -canvasHeight / 2, 0f, canvasHeight / 2, mPaint)//y轴
+//        canvas.drawLine(-canvasWidth / 2, 0f, canvasWidth / 2, 0f, mPaint)//x轴
+//        canvas.drawLine(0f, -canvasHeight / 2, 0f, canvasHeight / 2, mPaint)//y轴
 
         mPaint.color = Color.BLACK
+        //1类方法.直接描述路径
+
         //lineTo rLineTo
 //        val path = Path().apply {
 //            lineTo(200f,200f)   //从原点连线到点(200,200)
@@ -650,15 +653,116 @@ class SimpleView : View {
 //        }
 
         //绘制圆弧
-        val path = Path().apply {
-            lineTo(100f, 100f)
-            arcTo(
-                RectF(100f, 100f, 300f, 300f),
-                -90f, 90f, true
-            ) // 强制移动到弧形起点（无痕迹）
+//        val path = Path().apply {
+//            lineTo(100f, 100f)
+//            arcTo(
+//                RectF(100f, 100f, 300f, 300f),
+//                -90f, 90f, true
+//            ) // 强制移动到弧形起点（无痕迹）
+//
+////            addArc(RectF(100f, 100f, 300f, 300f), -90f, 90f)// <-- 和上面一句作用等价
+//        }
 
-//            addArc(RectF(100f, 100f, 300f, 300f), -90f, 90f)// <-- 和上面一句作用等价
+        // 闭合路径 close
+//        val path = Path().apply {
+//            lineTo(200f,200f)   //从原点连线到点(200,200)
+//            lineTo(200f,0f)     //从点(200,200)连线到点(200,0)
+//
+//            close() //闭合路径
+//        }
+
+//        val path = Path().apply {
+//            addRect(-200f,-200f,200f,200f,Path.Direction.CCW) //添加一个矩形
+//            setLastPoint(-300f,300f) //更改最后一个点位置
+//        }
+//        canvas.drawPath(path, mPaint)
+
+        //2类方法.辅助的设置或计算
+
+//        testSetFillType(canvas)
+//        testPathOp(canvas)
+        testComputeBounds(canvas)
+    }
+
+    /**
+     * 测试Path填充类型
+     */
+    private fun testSetFillType(canvas: Canvas) {
+        mPaint.style = Paint.Style.FILL //设置画笔为填充模式
+        val path = Path().apply {
+//            fillType = Path.FillType.EVEN_ODD//设置填充类型为奇偶规则
+            fillType = Path.FillType.WINDING//设置填充类型为非零环绕规则
+
+            //画一个五角星
+            moveTo(0f,-130f)
+
+            lineTo(-70f,110f)
+            lineTo(110f,-30f)
+            lineTo(-110f,-30f)
+            lineTo(70f,110f)
+            lineTo(0f,-130f)
         }
         canvas.drawPath(path, mPaint)
+    }
+
+    /**
+     * 测试Path布尔运算
+     */
+    private fun testPathOp(canvas: Canvas) {
+        val x = 80f
+        val r = 100f
+        val pathOpResult  = Path()
+        val path1 = Path()
+        val path2 = Path()
+
+        mPaint.style = Paint.Style.FILL
+        canvas.translate(250f,0f)
+
+        path1.addCircle(-x, 0f, r, Path.Direction.CW)
+        path2.addCircle(x, 0f, r, Path.Direction.CW)
+
+        pathOpResult.op(path1,path2, Path.Op.DIFFERENCE)
+        canvas.translate(0f, 200f)
+        canvas.drawText("DIFFERENCE", 240f,0f,mTextPaint)
+        canvas.drawPath(pathOpResult,mPaint)
+
+        pathOpResult.op(path1,path2, Path.Op.REVERSE_DIFFERENCE)
+        canvas.translate(0f, 300f)
+        canvas.drawText("REVERSE_DIFFERENCE", 240f,0f,mTextPaint)
+        canvas.drawPath(pathOpResult,mPaint)
+
+        pathOpResult.op(path1,path2, Path.Op.INTERSECT)
+        canvas.translate(0f, 300f)
+        canvas.drawText("INTERSECT", 240f,0f,mTextPaint)
+        canvas.drawPath(pathOpResult,mPaint)
+
+        pathOpResult.op(path1,path2, Path.Op.UNION)
+        canvas.translate(0f, 300f)
+        canvas.drawText("UNION", 240f,0f,mTextPaint)
+        canvas.drawPath(pathOpResult,mPaint)
+
+        pathOpResult.op(path1,path2, Path.Op.XOR)
+        canvas.translate(0f, 300f)
+        canvas.drawText("XOR", 240f,0f,mTextPaint)
+        canvas.drawPath(pathOpResult,mPaint)
+    }
+
+    /**
+     * 计算path边界
+     */
+    private fun testComputeBounds(canvas: Canvas) {
+        mPaint.style = Paint.Style.FILL
+        val rect = RectF() // 存放测量结果的矩形
+        val path = Path().apply {
+            addCircle(0f,0f,100f,Path.Direction.CW)
+            addCircle(90f,0f,100f,Path.Direction.CW)
+            computeBounds(rect,true)    // 测量Path
+        }
+        canvas.drawPath(path,mPaint)   // 绘制Path
+
+        mPaint.style = Paint.Style.STROKE
+        mPaint.color = Color.RED
+        canvas.drawRect(rect,mPaint)    // 绘制边界
+        LogUtils.i("$rect")
     }
 }
