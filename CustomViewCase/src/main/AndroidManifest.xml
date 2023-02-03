@@ -20,6 +20,8 @@
         </activity>
         <activity android:name=".ui.canvas.CanvasCaseActivity" />
         <activity android:name=".ui.canvas.CanvasCaseDetailActivity" />
+        <activity android:name=".ui.paint.PaintCaseActivity" />
+        <activity android:name=".ui.paint.PaintCaseDetailActivity" />
     </application>
 
 </manifest>

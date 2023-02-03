@@ -7,6 +7,7 @@ import com.clow.baselib.base.BaseActivity
 import com.clow.customviewcase.adapter.StringAdapter
 import com.clow.customviewcase.databinding.ActivityMainBinding
 import com.clow.customviewcase.ui.canvas.CanvasCaseActivity
+import com.clow.customviewcase.ui.paint.PaintCaseActivity
 import com.google.android.flexbox.FlexboxLayoutManager
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
@@ -30,6 +31,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             when(name){
                 "Canvas" -> {
                     startActivity(Intent(mContext, CanvasCaseActivity::class.java))
+                }
+                "Paint" -> {
+                    startActivity(Intent(mContext, PaintCaseActivity::class.java))
                 }
             }
         }

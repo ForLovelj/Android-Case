@@ -1,4 +1,4 @@
-package com.clow.customviewcase.weidget
+package com.clow.customviewcase.widget
 
 import android.content.Context
 import android.graphics.*
