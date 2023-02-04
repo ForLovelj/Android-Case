@@ -38,9 +38,10 @@ class PaintCaseView @JvmOverloads constructor(
             2 -> drawSetStrokeCap(canvas)
             3 -> drawSetStrokeJoin(canvas)
             4 -> drawSetStrokeMiter(canvas)
-            5 -> drawSetColor(canvas)
-            6 -> drawSetARGB(canvas)
-            7 -> drawSetShader(canvas)
+            5 -> drawSetXfermode(canvas)
+            6 -> drawSetColor(canvas)
+            7 -> drawSetARGB(canvas)
+            8 -> drawSetShader(canvas)
         }
     }
 
@@ -56,7 +57,23 @@ class PaintCaseView @JvmOverloads constructor(
         //扫描渐变测试
 //        testSweepGradient(canvas)
         //bitmap着色
-        testBitmapShader(canvas)
+//        testBitmapShader(canvas)
+        //混合着色器
+        testComposeShader(canvas)
+    }
+
+    private fun testComposeShader(canvas: Canvas) {
+        val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.beauty1)
+        //第一个bitmapShader
+        val bitmapShader = BitmapShader(bitmap,Shader.TileMode.CLAMP,Shader.TileMode.CLAMP)
+        //第二个辐射渐变shader
+        val radialShader = RadialGradient(400f,300f,100f,Color.parseColor("#FF7400"),
+            Color.parseColor("#BB86FC"),Shader.TileMode.CLAMP)
+        // ComposeShader：结合两个 Shader
+        val shader = ComposeShader(bitmapShader,radialShader,PorterDuff.Mode.MULTIPLY)
+
+        mPaint.shader = shader
+        canvas.drawCircle(400f,400f,300f,mPaint)
     }
 
     private fun testBitmapShader(canvas: Canvas) {
@@ -162,6 +179,29 @@ class PaintCaseView @JvmOverloads constructor(
         mPaint.color = Color.BLUE
         canvas.drawLine(100f,300f,800f,300f,mPaint)
     }
+
+    /**
+     * setXfermode
+     */
+    private fun drawSetXfermode(canvas: Canvas) {
+        val source = BitmapFactory.decodeResource(resources, R.mipmap.source)   //源图
+        val dst = BitmapFactory.decodeResource(resources, R.mipmap.destination) //目标图
+        val mode = PorterDuff.Mode.ADD  //PorterDuff 混合模式
+        val xfermode = PorterDuffXfermode(mode)
+
+        val rect = RectF(0f,0f,canvas.width.toFloat(),canvas.height.toFloat())
+        val saveCount = canvas.saveLayer(rect, mPaint)  //将绘制操作保存到新的图层
+
+        val bitmapRect = RectF(0f,0f,source.width.toFloat(),source.height.toFloat())
+        canvas.drawBitmap(dst,null,bitmapRect,mPaint) //绘制目标图
+        mPaint.setXfermode(xfermode)    //设置混合模式
+        canvas.drawBitmap(source,null,bitmapRect,mPaint) //绘制源图
+
+        mPaint.setXfermode(null)    //清除混合模式
+        canvas.restoreToCount(saveCount)    //还原画布
+
+    }
+
 
     /**
      * 设置 `MITER` 型拐角的延长线的最大值
