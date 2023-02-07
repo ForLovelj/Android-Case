@@ -25,6 +25,7 @@ class PaintCaseView @JvmOverloads constructor(
     }
     private var mType = -1
 
+
     fun drawForType(type: Int) {
         mType = type
         invalidate()
@@ -42,7 +43,145 @@ class PaintCaseView @JvmOverloads constructor(
             6 -> drawSetColor(canvas)
             7 -> drawSetARGB(canvas)
             8 -> drawSetShader(canvas)
+            9 -> drawSetColorFilter(canvas)
+            10 -> drawSetMaskFilter(canvas)
+            11 -> drawSetShadowLayer(canvas)
         }
+    }
+
+    private fun drawSetShadowLayer(canvas: Canvas) {
+
+        val text = "人间忽晚，山河已秋"
+        mPaint.textSize = 80f
+        mPaint.setShadowLayer(4f,4f,4f,Color.RED)
+        canvas.drawText(text, 100f, 300f, mPaint)
+    }
+
+    /**
+     * 基于整个画面过滤
+     */
+    private fun drawSetMaskFilter(canvas: Canvas) {
+        //模糊遮罩效果
+        drawBlurMaskFilter(canvas)
+        //浮雕遮罩效果
+//        drawEmbossMaskFilter(canvas)
+
+    }
+
+    private fun drawEmbossMaskFilter(canvas: Canvas) {
+        val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.beauty1)
+        //绘制原图
+        canvas.drawBitmap(bitmap,100f,100f,mPaint)
+        //EmbossMaskFilter已被废弃  如果要看到效果需要关闭硬件加速
+        val embossMaskFilter = EmbossMaskFilter(floatArrayOf(2f, 2f, 2f), 0.1f, 10f, 10f)
+        mPaint.setMaskFilter(embossMaskFilter)
+        //绘制过滤后的图
+        canvas.drawBitmap(bitmap,100f,150f+bitmap.height,mPaint)
+    }
+
+    private fun drawBlurMaskFilter(canvas: Canvas) {
+        val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.beauty1)
+        val rectF = RectF(100f, 100f, 100f + bitmap.width / 2, 100f + bitmap.height / 2)
+        canvas.drawBitmap(bitmap,null, rectF,mPaint)    //原图
+
+        //NORMAL效果
+        canvas.translate(0f,300f+bitmap.height/2)
+        val normalMaskFilter = BlurMaskFilter(50f, BlurMaskFilter.Blur.NORMAL)
+        mPaint.setMaskFilter(normalMaskFilter)
+        //绘制过滤后的图
+        canvas.drawBitmap(bitmap,null, rectF,mPaint)
+
+        //SOLID效果
+        rectF.offset(200f+bitmap.width/2f,0f)
+        val solidMaskFilter = BlurMaskFilter(50f, BlurMaskFilter.Blur.SOLID)
+        mPaint.setMaskFilter(solidMaskFilter)
+        canvas.drawBitmap(bitmap,null, rectF,mPaint)
+
+        //INNER效果
+        canvas.translate(0f,300f+bitmap.height/2)
+        rectF.offset(-(200f+bitmap.width/2f),0f)
+        val innerMaskFilter = BlurMaskFilter(50f, BlurMaskFilter.Blur.INNER)
+        mPaint.setMaskFilter(innerMaskFilter)
+        canvas.drawBitmap(bitmap,null, rectF,mPaint)
+
+        //OUTER效果
+        rectF.offset(200f+bitmap.width/2f,0f)
+        val outerMaskFilter = BlurMaskFilter(50f, BlurMaskFilter.Blur.OUTER)
+        mPaint.setMaskFilter(outerMaskFilter)
+        canvas.drawBitmap(bitmap,null, rectF,mPaint)
+    }
+    /**
+     * 基于每个像素进行颜色过滤
+     */
+    private fun drawSetColorFilter(canvas: Canvas) {
+        //LightingColorFilter
+//        drawLightingColorFilter(canvas)
+        //PorterDuffColorFilter
+//        drawPorterDuffColorFilter(canvas)
+        //ColorMatrixColorFilter
+        drawColorMatrixColorFilter(canvas)
+    }
+
+    private fun drawColorMatrixColorFilter(canvas: Canvas) {
+        val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.beauty1)
+        canvas.drawBitmap(bitmap,100f,100f,mPaint)
+
+        // 反相效果 -- 底片(曝光)效果（就是将每个像素都变成它的相反的值）
+//        val colorMatrix = ColorMatrix(
+//            floatArrayOf(
+//                -1f, 0f,0f,0f,255f,
+//                0f,-1f,0f,0f,255f,
+//                0f,0f,-1f,0f,255f,
+//                0f,0f,0f,1f,0f
+//            )
+//        )
+        //美白效果
+//        val colorMatrix = ColorMatrix(
+//            floatArrayOf(
+//                1.2f, 0f,0f,0f,0f,
+//                0f,1.2f,0f,0f,0f,
+//                0f,0f,1.2f,0f,0f,
+//                0f,0f,0f,1.2f,0f
+//            )
+//        )
+        //复古效果
+        val colorMatrix = ColorMatrix(
+            floatArrayOf(
+                1/2f,1/2f,1/2f,0f,0f,
+                1/3f, 1/3f,1/3f,0f,0f,
+                1/4f,1/4f,1/4f,0f,0f,
+                0f,0f,0f,1f,0f
+            )
+        )
+//        colorMatrix.setSaturation(2f)   //设置饱和度
+//        colorMatrix.setScale(1.2f,1.2f,1.2f,1)   //设置缩放
+        val colorMatrixColorFilter = ColorMatrixColorFilter(colorMatrix)
+        mPaint.setColorFilter(colorMatrixColorFilter)
+        //绘制颜色过滤后的图
+        canvas.drawBitmap(bitmap,100f,150f+bitmap.height,mPaint)
+    }
+
+    private fun drawPorterDuffColorFilter(canvas: Canvas) {
+        //这里需要注意 这里我们的bitmap属于目标图片（DST），Color.parseColor("#300000ff")属于源图片（SRC）
+        val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.beauty1)
+        canvas.drawBitmap(bitmap,100f,100f,mPaint)
+
+        val porterDuffColorFilter = PorterDuffColorFilter(Color.parseColor("#300000ff"), PorterDuff.Mode.SRC_OVER)
+        mPaint.setColorFilter(porterDuffColorFilter)
+        //绘制过滤颜色后的图
+        canvas.drawBitmap(bitmap,100f,150f+bitmap.height,mPaint)
+    }
+
+    private fun drawLightingColorFilter(canvas: Canvas) {
+        val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.beauty1)
+        //绘制原图
+        canvas.drawBitmap(bitmap,100f,100f,mPaint)
+//        val lightingColorFilter = LightingColorFilter(0x00ffff, 0x000000)   //移除红色
+        val lightingColorFilter = LightingColorFilter(0xffffff, 0x404040)   //原图所有颜色效果增强
+        mPaint.setColorFilter(lightingColorFilter)
+        //绘制过滤颜色后的图
+        canvas.drawBitmap(bitmap,100f,150f+bitmap.height,mPaint)
+
     }
 
     /**
