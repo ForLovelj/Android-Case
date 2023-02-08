@@ -46,9 +46,86 @@ class PaintCaseView @JvmOverloads constructor(
             9 -> drawSetColorFilter(canvas)
             10 -> drawSetMaskFilter(canvas)
             11 -> drawSetShadowLayer(canvas)
+            12 -> drawSetPathEffect(canvas)
         }
     }
 
+    private fun drawSetPathEffect(canvas: Canvas) {
+
+//        drawCornerPathEffect(canvas)
+//        drawDiscretePathEffect(canvas)
+        drawDashPathEffect(canvas)
+
+    }
+
+    private fun drawDashPathEffect(canvas: Canvas) {
+        mPaint.style = Paint.Style.STROKE
+        mPaint.strokeWidth = 4f
+        val path = Path().apply {
+            moveTo(100f, 100f)
+            lineTo(200f, 300f)
+            rLineTo(100f, -200f)
+            rLineTo(100f, 200f)
+            rLineTo(150f, -250f)
+            rLineTo(200f, 200f)
+        }
+        //绘制原path
+        canvas.drawPath(path,mPaint)
+
+        canvas.translate(0f,400f)
+        val dashPathEffect = DashPathEffect(floatArrayOf(20f,10f,5f,10f),5f)
+        mPaint.setPathEffect(dashPathEffect)
+        //绘制DashPathEffect效果
+        canvas.drawPath(path,mPaint)
+    }
+
+    private fun drawDiscretePathEffect(canvas: Canvas) {
+        mPaint.style = Paint.Style.STROKE
+        mPaint.strokeWidth = 4f
+        val path = Path().apply {
+            moveTo(100f, 100f)
+            lineTo(200f, 300f)
+            rLineTo(100f, -200f)
+            rLineTo(100f, 200f)
+            rLineTo(150f, -250f)
+            rLineTo(200f, 200f)
+        }
+        //绘制原path
+        canvas.drawPath(path,mPaint)
+
+        canvas.translate(0f,400f)
+        val discretePathEffect = DiscretePathEffect(10f,5f)
+        mPaint.setPathEffect(discretePathEffect)
+        //绘制DiscretePathEffect效果
+        canvas.drawPath(path,mPaint)
+
+    }
+
+    private fun drawCornerPathEffect(canvas: Canvas) {
+        mPaint.style = Paint.Style.STROKE
+        mPaint.strokeWidth = 4f
+        val path = Path().apply {
+            moveTo(100f, 100f)
+            lineTo(200f, 300f)
+            rLineTo(100f, -200f)
+            rLineTo(100f, 200f)
+            rLineTo(150f, -250f)
+            rLineTo(200f, 200f)
+        }
+        //绘制原path
+        canvas.drawPath(path,mPaint)
+
+        canvas.translate(0f,400f)
+        val cornerPathEffect = CornerPathEffect(50f)
+        mPaint.setPathEffect(cornerPathEffect)
+        //绘制CornerPathEffect效果
+        canvas.drawPath(path,mPaint)
+
+    }
+
+    /**
+     *  设置阴影层
+     */
     private fun drawSetShadowLayer(canvas: Canvas) {
 
         val text = "人间忽晚，山河已秋"

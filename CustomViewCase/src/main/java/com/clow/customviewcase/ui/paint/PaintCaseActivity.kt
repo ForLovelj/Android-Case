@@ -22,7 +22,7 @@ class PaintCaseActivity: BaseActivity<ActivityPaintCaseBinding>() {
     private val mNav = mutableListOf(
         "setStyle","setStrokeWidth","setStrokeCap","setStrokeJoin","setStrokeMiter",
         "setXfermode","setColor","setARGB","setShader","setColorFilter",
-        "setMaskFilter","setShadowLayer",
+        "setMaskFilter","setShadowLayer","setPathEffect",
     )
 
     override fun layoutId() = R.layout.activity_paint_case
