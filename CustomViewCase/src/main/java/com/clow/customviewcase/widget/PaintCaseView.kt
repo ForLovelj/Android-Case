@@ -47,15 +47,226 @@ class PaintCaseView @JvmOverloads constructor(
             10 -> drawSetMaskFilter(canvas)
             11 -> drawSetShadowLayer(canvas)
             12 -> drawSetPathEffect(canvas)
+            13 -> drawSetTextSize(canvas)
+            14 -> drawSetTypeface(canvas)
+            15 -> drawSetFakeBoldText(canvas)
+            16 -> drawSetTextAlign(canvas)
+            17 -> drawSetUnderlineText(canvas)
+            18 -> drawSetStrikeThruText(canvas)
+            19 -> drawSetTextScaleX(canvas)
+            20 -> drawSetTextSkewX(canvas)
+            21 -> drawSetLetterSpacing(canvas)
         }
     }
 
+    /**
+     * 设置字符间距
+     */
+    private fun drawSetLetterSpacing(canvas: Canvas) {
+
+        val text = "人间忽晚，山河已秋"
+        mPaint.textSize = 54f
+        mPaint.letterSpacing = 0.2f
+        canvas.drawText(text, 100f, 100f, mPaint)
+    }
+
+    /**
+     * 设置倾斜度
+     */
+    private fun drawSetTextSkewX(canvas: Canvas) {
+
+        val text = "人间忽晚，山河已秋"
+        mPaint.textSize = 54f
+        mPaint.textSkewX = -0.4f
+        canvas.drawText(text, 100f, 100f, mPaint)
+    }
+
+    /**
+     * 设置文字横向缩放
+     */
+    private fun drawSetTextScaleX(canvas: Canvas) {
+        val text = "人间忽晚，山河已秋"
+        mPaint.textSize = 54f
+        mPaint.textScaleX = 1f
+        canvas.drawText(text, 100f, 100f, mPaint)
+
+        mPaint.textScaleX = 0.8f
+        canvas.drawText(text, 100f, 300f, mPaint)
+
+        mPaint.textScaleX = 1.2f
+        canvas.drawText(text, 100f, 500f, mPaint)
+
+    }
+
+    /**
+     * 设置删除线
+     */
+    private fun drawSetStrikeThruText(canvas: Canvas) {
+        val text = "人间忽晚，山河已秋"
+        mPaint.textSize = 54f
+        mPaint.isStrikeThruText = true
+        canvas.drawText(text, 100f, 100f, mPaint)
+
+    }
+
+    /**
+     * 设置下划线
+     */
+    private fun drawSetUnderlineText(canvas: Canvas) {
+        val text = "人间忽晚，山河已秋"
+        mPaint.textSize = 54f
+        mPaint.isUnderlineText = true
+        canvas.drawText(text, 100f, 100f, mPaint)
+    }
+
+    /**
+     * 设置对齐方式
+     */
+    private fun drawSetTextAlign(canvas: Canvas) {
+        val text = "人间忽晚，山河已秋"
+        mPaint.textSize = 54f
+        mPaint.textAlign = Paint.Align.LEFT
+        canvas.drawText(text, 500f, 100f, mPaint)
+        mPaint.textAlign = Paint.Align.CENTER
+        canvas.drawText(text, 500f, 300f, mPaint)
+        mPaint.textAlign = Paint.Align.RIGHT
+        canvas.drawText(text, 500f, 500f, mPaint)
+    }
+
+    /**
+     * 设置伪粗体
+     */
+    private fun drawSetFakeBoldText(canvas: Canvas) {
+        val text = "人间忽晚，山河已秋"
+        mPaint.textSize = 54f
+        mPaint.isFakeBoldText = false
+        canvas.drawText(text, 100f, 100f, mPaint)
+        mPaint.isFakeBoldText = true
+        canvas.drawText(text, 100f, 300f, mPaint)
+    }
+
+    /**
+     * 设置字体
+     */
+    private fun drawSetTypeface(canvas: Canvas) {
+        val text = "人间忽晚，山河已秋"
+        mPaint.textSize = 54f
+        mPaint.typeface = Typeface.DEFAULT
+        canvas.drawText(text, 100f, 100f, mPaint)
+        mPaint.typeface = Typeface.SERIF
+        canvas.drawText(text, 100f, 300f, mPaint)
+        mPaint.typeface = Typeface.createFromAsset(context.assets, "RuiZiZhenYanTi.ttf")
+        canvas.drawText(text, 100f, 500f, mPaint)
+    }
+
+    /**
+     * 设置文字大小
+     */
+    private fun drawSetTextSize(canvas: Canvas) {
+
+        val text = "人间忽晚，山河已秋"
+        mPaint.textSize = 18f
+        canvas.drawText(text,100f,50f,mPaint)
+        mPaint.textSize = 36f
+        canvas.drawText(text,100f,105f,mPaint)
+        mPaint.textSize = 54f
+        canvas.drawText(text,100f,170f,mPaint)
+        mPaint.textSize = 72f
+        canvas.drawText(text,100f,250f,mPaint)
+
+    }
+
+    /**
+     * 使用PathEffect来添加效果
+     */
     private fun drawSetPathEffect(canvas: Canvas) {
 
 //        drawCornerPathEffect(canvas)
 //        drawDiscretePathEffect(canvas)
-        drawDashPathEffect(canvas)
+//        drawDashPathEffect(canvas)
+//        drawPathDashPathEffect(canvas)
+//        drawSumPathEffect(canvas)
+        drawComposePathEffect(canvas)
 
+    }
+
+    private fun drawComposePathEffect(canvas: Canvas) {
+        mPaint.style = Paint.Style.STROKE
+        mPaint.strokeWidth = 4f
+        val path = Path().apply {
+            moveTo(100f, 100f)
+            lineTo(200f, 300f)
+            rLineTo(100f, -200f)
+            rLineTo(100f, 200f)
+            rLineTo(150f, -250f)
+            rLineTo(200f, 200f)
+        }
+        //绘制原path
+        canvas.drawPath(path,mPaint)
+
+        canvas.translate(0f,400f)
+        val discretePathEffect = DiscretePathEffect(10f,5f)
+        val dashPathEffect = DashPathEffect(floatArrayOf(20f,10f,5f,10f),5f)
+        //在先绘制dashPathEffect的效果后，基于这个效果再绘制discretePathEffect
+        val composePathEffect = ComposePathEffect(dashPathEffect, discretePathEffect)
+        mPaint.setPathEffect(composePathEffect)
+        //绘制ComposePathEffect效果
+        canvas.drawPath(path,mPaint)
+    }
+
+    private fun drawSumPathEffect(canvas: Canvas) {
+        mPaint.style = Paint.Style.STROKE
+        mPaint.strokeWidth = 4f
+        val path = Path().apply {
+            moveTo(100f, 100f)
+            lineTo(200f, 300f)
+            rLineTo(100f, -200f)
+            rLineTo(100f, 200f)
+            rLineTo(150f, -250f)
+            rLineTo(200f, 200f)
+        }
+        //绘制原path
+        canvas.drawPath(path,mPaint)
+
+        canvas.translate(0f,400f)
+        val discretePathEffect = DiscretePathEffect(10f,5f)
+        val dashPathEffect = DashPathEffect(floatArrayOf(20f,10f,5f,10f),5f)
+        //对原Path会先绘制dashPathEffect 再绘制discretePathEffect
+        val sumPathEffect = SumPathEffect(dashPathEffect, discretePathEffect)
+        mPaint.setPathEffect(sumPathEffect)
+        //绘制SumPathEffect效果
+        canvas.drawPath(path,mPaint)
+    }
+
+    private fun drawPathDashPathEffect(canvas: Canvas) {
+        mPaint.style = Paint.Style.STROKE
+        mPaint.strokeWidth = 4f
+        val rect = RectF(100f,100f,400f,300f)
+        val dashPath = Path().apply {
+            lineTo(15f,20f)
+            lineTo(-15f,20f)
+            close()
+        }
+        //绘制原图
+        canvas.drawRoundRect(rect,40f,40f,mPaint)
+
+        canvas.translate(0f,300f)
+        //TRANSLATE效果
+        val translateDashPathEffect = PathDashPathEffect(dashPath,30f,0f,PathDashPathEffect.Style.TRANSLATE)
+        mPaint.setPathEffect(translateDashPathEffect)
+        canvas.drawRoundRect(rect,40f,40f,mPaint)
+
+        canvas.translate(0f,300f)
+        //ROTATE效果
+        val rotateDashPathEffect = PathDashPathEffect(dashPath,30f,0f,PathDashPathEffect.Style.ROTATE)
+        mPaint.setPathEffect(rotateDashPathEffect)
+        canvas.drawRoundRect(rect,40f,40f,mPaint)
+
+        canvas.translate(0f,300f)
+        //MORPH效果
+        val morphDashPathEffect = PathDashPathEffect(dashPath,30f,0f,PathDashPathEffect.Style.MORPH)
+        mPaint.setPathEffect(morphDashPathEffect)
+        canvas.drawRoundRect(rect,40f,40f,mPaint)
     }
 
     private fun drawDashPathEffect(canvas: Canvas) {
