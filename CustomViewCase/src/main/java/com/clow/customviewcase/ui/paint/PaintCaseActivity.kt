@@ -24,7 +24,8 @@ class PaintCaseActivity: BaseActivity<ActivityPaintCaseBinding>() {
         "setXfermode","setColor","setARGB","setShader","setColorFilter",
         "setMaskFilter","setShadowLayer","setPathEffect","setTextSize","setTypeface",
         "setFakeBoldText","setTextAlign","setUnderlineText","setStrikeThruText","setTextScaleX",
-        "setTextSkewX","setLetterSpacing","setUnderlineText","setStrikeThruText","setTextLocale",
+        "setTextSkewX","setLetterSpacing","drawText","getFontSpacing","getTextBounds",
+        "breakText"
     )
 
     override fun layoutId() = R.layout.activity_paint_case

@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
+import com.blankj.utilcode.util.LogUtils
 import com.clow.customviewcase.R
 import kotlin.math.sin
 
@@ -56,7 +57,97 @@ class PaintCaseView @JvmOverloads constructor(
             19 -> drawSetTextScaleX(canvas)
             20 -> drawSetTextSkewX(canvas)
             21 -> drawSetLetterSpacing(canvas)
+            22 -> drawText(canvas)
+            23 -> drawGetFontSpacing(canvas)
+            24 -> drawGetTextBounds(canvas)
+            25 -> drawBreakText(canvas)
         }
+    }
+
+    /**
+     * 给出宽度上限的前提下测量文字的宽度
+     */
+    private fun drawBreakText(canvas: Canvas) {
+
+        val measuredWidth = floatArrayOf(0f)
+        var measuredCount = 0
+        val text = "人间忽晚，山河已秋"
+        mPaint.textSize = 80f
+        //宽度上限400 不够用，文字截断
+        measuredCount = mPaint.breakText(text,0,text.length,true,400f,measuredWidth)
+        canvas.drawText(text,0,measuredCount,100f,100f,mPaint)
+        LogUtils.i("measuredWidth: ${measuredWidth[0]}")//400
+
+        //宽度上限600 不够用，文字截断
+        measuredCount = mPaint.breakText(text,0,text.length,true,600f,measuredWidth)
+        canvas.drawText(text,0,measuredCount,100f,200f,mPaint)
+        LogUtils.i("measuredWidth: ${measuredWidth[0]}")//560
+
+        ////宽度上限800 够用
+        measuredCount = mPaint.breakText(text,0,text.length,true,800f,measuredWidth)
+        canvas.drawText(text,0,measuredCount,100f,300f,mPaint)
+        LogUtils.i("measuredWidth: ${measuredWidth[0]}")//720
+    }
+
+    /**
+     * 获取文字的显示范围
+     */
+    private fun drawGetTextBounds(canvas: Canvas) {
+        val text = "人间忽晚，山河已秋"
+        mPaint.textSize = 80f
+        canvas.drawText(text,100f,100f,mPaint)
+
+        val bounds = Rect()
+        mPaint.getTextBounds(text,0,text.length,bounds)
+        //偏移到文字绘制起始位置
+        bounds.offset(100,100)
+
+        mPaint.style = Paint.Style.STROKE
+        mPaint.strokeWidth = 4f
+        canvas.drawRect(bounds,mPaint)
+    }
+
+    /**
+     * 获取文字行间距
+     */
+    private fun drawGetFontSpacing(canvas: Canvas) {
+        val text = "Hello World!"
+        mPaint.textSize = 80f
+        canvas.drawText(text, 100f, 100f, mPaint)
+        canvas.drawText(text, 100f, 100f+mPaint.fontSpacing, mPaint)
+        canvas.drawText(text, 100f, 100f+2*mPaint.fontSpacing, mPaint)
+    }
+
+    /**
+     * 绘制居中对齐文字
+     */
+    private fun drawText(canvas: Canvas) {
+        mPaint.style = Paint.Style.STROKE
+        mPaint.strokeWidth = 4f
+        canvas.translate(canvas.width/3f,canvas.height/3f)
+        val rect = RectF(100f,100f,600f,400f)
+        canvas.drawRect(rect,mPaint)
+        mPaint.textSize = 80f
+        val fontMetrics = mPaint.fontMetrics
+        //算出基线到中线的距离
+        val h = (fontMetrics.descent - fontMetrics.ascent) / 2 - fontMetrics.descent
+
+        //中线y坐标为rect的中心Y坐标
+        val centerY = (rect.bottom + rect.top) / 2
+        //baseLine的y坐标
+        val baseLineY = centerY + h
+        val text = "Hello World!"
+        //绘制和矩形居中对齐的文字
+        canvas.drawText(text,100f,baseLineY,mPaint)
+    }
+
+    /**
+     * @param paint 画笔，计算前需要先设置文字大小textsize
+     * @return 基线和centerY的距离
+     */
+    fun getBaseLine2CenterY(paint: Paint): Float {
+        val fontMetrics = paint.fontMetrics
+        return (fontMetrics.descent - fontMetrics.ascent) / 2 - fontMetrics.descent
     }
 
     /**
