@@ -8,6 +8,7 @@ import com.clow.animation_case.R
 import com.clow.animation_case.databinding.FragmentAnimatorBinding
 import com.clow.animation_case.ui.AnimatorActivity
 import com.clow.animation_case.ui.InterpolatorActivity
+import com.clow.animation_case.ui.TurnOverCardActivity
 import com.clow.animation_case.ui.adapter.NameAdapter
 import com.clow.baselib.base.BaseFragment
 
@@ -23,7 +24,7 @@ class AnimatorFragment: BaseFragment<FragmentAnimatorBinding>() {
         NameAdapter()
     }
 
-    private val mNames = mutableListOf("基本使用","插值器")
+    private val mNames = mutableListOf("基本使用","插值器","翻牌子")
 
     override fun layoutId() = R.layout.fragment_animator
 
@@ -40,6 +41,9 @@ class AnimatorFragment: BaseFragment<FragmentAnimatorBinding>() {
                 }
                 1 -> {
                     startActivity(Intent(requireContext(), InterpolatorActivity::class.java))
+                }
+                2 -> {
+                    startActivity(Intent(requireContext(), TurnOverCardActivity::class.java))
                 }
             }
         }

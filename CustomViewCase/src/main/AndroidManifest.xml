@@ -22,6 +22,7 @@
         <activity android:name=".ui.canvas.CanvasCaseDetailActivity" />
         <activity android:name=".ui.paint.PaintCaseActivity" />
         <activity android:name=".ui.paint.PaintCaseDetailActivity" />
+        <activity android:name=".ui.MarqueeTextViewActivity" />
     </application>
 
 </manifest>
