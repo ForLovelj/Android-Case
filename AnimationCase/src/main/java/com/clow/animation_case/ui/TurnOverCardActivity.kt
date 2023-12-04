@@ -51,6 +51,7 @@ class TurnOverCardActivity : BaseActivity<ActivityTurnOverCardBinding>() {
     private val mStartPoint = Point()
     private val mEndPoint = Point()
     private var mPosition = 0
+    private var isDrop = false
 
     override fun layoutId() = R.layout.activity_turn_over_card
 
@@ -79,16 +80,27 @@ class TurnOverCardActivity : BaseActivity<ActivityTurnOverCardBinding>() {
             view.getLocationInWindow(location)
             start(turnOverData,location)
         }
-        mAdapter.setNewInstance(mData)
 
+        mAdapter.setOnItemLongClickListener { adapter, view, position ->
+            val turnOverData = mAdapter.data[position]
+            val tempView = View.inflate(mContext, R.layout.item_turn_over, null).apply {
+                layoutParams = ViewGroup.LayoutParams(71f.dp, 109.5f.dp)
+            }
+            mTempViewBind = ItemTurnOverBinding.bind(tempView)
+            mTempViewBind?.image?.setImageResource(turnOverData.imageBack)
+            mViewBinding.dropContainer.setDragView(tempView)
+            mViewBinding.dropContainer.setDrag(true)
+            true
+        }
+        mAdapter.setNewInstance(mData)
 
     }
 
     fun start(turnOverData: TurnOverData, startLocation: IntArray) {
         (window.decorView as ViewGroup).let {
-            mStartPoint.x = startLocation[0] + 18f.dp
             mStartPoint.y = startLocation[1]
             mEndPoint.x = it.right / 2 - 71f.dp / 2
+            mStartPoint.x = startLocation[0] + 18f.dp
             mEndPoint.y = it.bottom / 2 - 109.5f.dp / 2
 
             mTempView.x = mStartPoint.x.toFloat()
@@ -110,12 +122,24 @@ class TurnOverCardActivity : BaseActivity<ActivityTurnOverCardBinding>() {
                 Keyframe.ofFloat(1f, mEndPoint.y.toFloat())
             )
 
-            ObjectAnimator.ofPropertyValuesHolder(mTempView,translationXValuesHolder,translationYValuesHolder).apply {
+            val sx = PropertyValuesHolder.ofKeyframe(
+                View.SCALE_X,
+                Keyframe.ofFloat(0f, 1.0f),
+                Keyframe.ofFloat(1.0f, 1.5f)
+            )
+            val sy = PropertyValuesHolder.ofKeyframe(
+                View.SCALE_Y,
+                Keyframe.ofFloat(0f, 1.0f),
+                Keyframe.ofFloat(1.0f, 1.5f)
+            )
+
+            ObjectAnimator.ofPropertyValuesHolder(mTempView,translationXValuesHolder,translationYValuesHolder,sy,sx).apply {
                 duration = 500
                 interpolator = DecelerateInterpolator()
                 addListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator) {
-                        scale(turnOverData,it)
+//                        scale(turnOverData,it)
+                        rotate1(turnOverData,it)
                     }
                 })
                 start()
@@ -179,8 +203,8 @@ class TurnOverCardActivity : BaseActivity<ActivityTurnOverCardBinding>() {
                             .translationX(mStartPoint.x.toFloat())
                             .translationY(mStartPoint.y.toFloat())
                             .withEndAction {
-                                viewGroup.removeView(mTempView)
                                 mAdapter.notifyItemChanged(mPosition)
+                                viewGroup.removeView(mTempView)
                             }
                     }
                 }
