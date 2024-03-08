@@ -10,7 +10,10 @@
         app:layout_constraintTop_toTopOf="parent"
         android:ellipsize="marquee"
         app:orientation="vertical"
+        android:layout_margin="10dp"
+        android:gravity="center"
         android:text="具有更好的可用性：JAR 包方式提供，更方便应用到持续集成系统中，从而追踪和对比每个 APK 版本之间的变化"
+        android:textColor="@color/teal_200"
         android:layout_width="160dp"
         android:layout_height="50dp"/>
 

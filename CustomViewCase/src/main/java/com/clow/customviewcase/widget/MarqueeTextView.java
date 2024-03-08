@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
  */
 public class MarqueeTextView extends AppCompatTextView {
 
-    private static final int DEFAULT_BG_COLOR = Color.parseColor("#FFEFEFEF");
+    private static final int DEFAULT_BG_COLOR = Color.parseColor("#FFFFFFFF");
 
     @IntDef({HORIZONTAL, VERTICAL})
     @Retention(RetentionPolicy.SOURCE)
@@ -160,7 +160,10 @@ public class MarqueeTextView extends AppCompatTextView {
         // 是否需要重启启动跑马灯
         restartMarqueeIfNeeded();
 
-//        super.onDraw(canvas);
+        super.onDraw(canvas);
+        //不满足不绘制跑马灯 避免影响原来文本
+        if(mMarquee == null)return;
+
         // 再次绘制背景色，覆盖下面由TextView绘制的文本，视情况可以不调用`super.onDraw(canvas);`
         // 如果没有背景色则使用默认颜色
         Drawable background = getBackground();
@@ -171,7 +174,6 @@ public class MarqueeTextView extends AppCompatTextView {
         }
 
         canvas.save();
-
         canvas.translate(0, 0);
         //水平跑马灯
         if (mOrientation == HORIZONTAL) {
