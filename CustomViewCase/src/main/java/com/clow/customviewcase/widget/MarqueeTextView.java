@@ -5,8 +5,11 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.Choreographer;
+import android.view.Gravity;
+
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,7 +28,7 @@ import java.lang.reflect.Method;
  */
 public class MarqueeTextView extends AppCompatTextView {
 
-    private static final int DEFAULT_BG_COLOR = Color.parseColor("#FFFFFFFF");
+    private static final int DEFAULT_BG_COLOR = Color.parseColor("#00000000");
 
     @IntDef({HORIZONTAL, VERTICAL})
     @Retention(RetentionPolicy.SOURCE)
@@ -40,6 +43,7 @@ public class MarqueeTextView extends AppCompatTextView {
     private boolean isMarquee;
 
     private int mOrientation;
+    private Marquee.Builder builder = new Marquee.Builder();
 
     public MarqueeTextView(@NonNull Context context) {
         this(context, null);
@@ -56,6 +60,12 @@ public class MarqueeTextView extends AppCompatTextView {
 
         mOrientation = ta.getInt(R.styleable.MarqueeTextView_orientation, HORIZONTAL);
         ta.recycle();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        stop();
     }
 
     @Override
@@ -76,11 +86,49 @@ public class MarqueeTextView extends AppCompatTextView {
     private void restartMarqueeIfNeeded() {
         if (mRestartMarquee) {
             mRestartMarquee = false;
-            startMarquee();
+            startMarquee(builder);
         }
     }
 
-    public void setMarquee(boolean marquee) {
+    /**
+     * 开始跑马灯
+     */
+    public void start() {
+        post(() -> {
+            boolean wasStart = isMarquee();
+            isMarquee = true;
+            if (!wasStart) {
+                startMarquee(builder);
+            }
+        });
+    }
+
+    /**
+     * 通过配置开始跑马灯
+     * @param builder
+     */
+    public void start(Marquee.Builder builder) {
+        post(() -> {
+            boolean wasStart = isMarquee();
+            isMarquee = true;
+            if (!wasStart) {
+                startMarquee(builder);
+            }
+        });
+    }
+
+    /**
+     * 停止跑马灯
+     */
+    public void stop() {
+        boolean wasStart = isMarquee();
+        isMarquee = false;
+        if (wasStart) {
+            stopMarquee();
+        }
+    }
+
+    private void setMarquee(boolean marquee) {
         boolean wasStart = isMarquee();
 
         isMarquee = marquee;
@@ -102,6 +150,18 @@ public class MarqueeTextView extends AppCompatTextView {
         return mOrientation;
     }
 
+    public boolean isRunning() {
+        return mMarquee != null && mMarquee.isRunning();
+    }
+
+    public boolean isStopped() {
+        return mMarquee != null && mMarquee.isStopped();
+    }
+
+    /**
+     * 是否为跑马灯状态
+     * @return
+     */
     public boolean isMarquee() {
         return isMarquee;
     }
@@ -130,8 +190,22 @@ public class MarqueeTextView extends AppCompatTextView {
                 setVerticalFadingEdgeEnabled(true);
             }
 
-            if (mMarquee == null) mMarquee = new Marquee(this);
-            mMarquee.start(-1);
+            if (mMarquee == null) mMarquee = builder.build();
+            mMarquee.start(builder.repeatLimit);
+        }
+    }
+
+    private void startMarquee(Marquee.Builder builder) {
+        if (canMarquee()) {
+
+            if (mOrientation == HORIZONTAL) {
+                setHorizontalFadingEdgeEnabled(true);
+            } else {
+                setVerticalFadingEdgeEnabled(true);
+            }
+            this.builder = builder;
+            if (mMarquee == null) mMarquee = builder.marqueeTextView(this).build();
+            mMarquee.start(builder.repeatLimit);
         }
     }
 
@@ -155,16 +229,27 @@ public class MarqueeTextView extends AppCompatTextView {
         }
     }
 
+    int _getVerticalOffset(boolean forceNormal) {
+        try {
+            Class<?> clz = getClass().getSuperclass().getSuperclass();
+            Method getVerticalOffset = clz.getDeclaredMethod("getVerticalOffset",boolean.class);
+            getVerticalOffset.setAccessible(true);
+            return (int) getVerticalOffset.invoke(this,forceNormal);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         // 是否需要重启启动跑马灯
         restartMarqueeIfNeeded();
 
-        super.onDraw(canvas);
-        //不满足不绘制跑马灯 避免影响原来文本
-        if(mMarquee == null)return;
+        //如果调用了`super.onDraw(canvas);` 背景不能有透明度，有透明度会导致遮盖不了TextView绘制的文本
+//        super.onDraw(canvas);
 
-        // 再次绘制背景色，覆盖下面由TextView绘制的文本，视情况可以不调用`super.onDraw(canvas);`
+        // 再次绘制背景色，覆盖下面由TextView绘制的文本，我们这儿自己简单的处理了文本绘制，可以不调用`super.onDraw(canvas);`
         // 如果没有背景色则使用默认颜色
         Drawable background = getBackground();
         if (background != null) {
@@ -172,9 +257,50 @@ public class MarqueeTextView extends AppCompatTextView {
         } else {
             canvas.drawColor(DEFAULT_BG_COLOR);
         }
-
         canvas.save();
-        canvas.translate(0, 0);
+
+        //处理文字的padding  Gravity
+        final int compoundPaddingLeft = getCompoundPaddingLeft();
+        final int compoundPaddingTop = getCompoundPaddingTop();
+        final int compoundPaddingRight = getCompoundPaddingRight();
+        final int compoundPaddingBottom = getCompoundPaddingBottom();
+        int extendedPaddingTop = getExtendedPaddingTop();
+        int extendedPaddingBottom = getExtendedPaddingBottom();
+
+        final int vspace = getBottom() - getTop() - compoundPaddingBottom - compoundPaddingTop;
+        final int maxScrollY = getLayout().getHeight() - vspace;
+
+        float clipLeft = compoundPaddingLeft + getScrollX();
+        float clipTop = (getScrollY() == 0) ? 0 : extendedPaddingTop + getScrollY();
+        float clipRight = getRight() - getLeft() - compoundPaddingRight+ getScrollX();
+        float clipBottom = getBottom() - getTop() + getScrollY()
+                - ((getScrollY() == maxScrollY) ? 0 : extendedPaddingBottom);
+
+        float mShadowRadius = getShadowRadius();
+        if (mShadowRadius != 0) {
+            float mShadowDx = getShadowDx();
+            float mShadowDy = getShadowDy();
+            clipLeft += Math.min(0, mShadowDx - mShadowRadius);
+            clipRight += Math.max(0, mShadowDx + mShadowRadius);
+
+            clipTop += Math.min(0, mShadowDy - mShadowRadius);
+            clipBottom += Math.max(0, mShadowDy + mShadowRadius);
+        }
+        canvas.clipRect(clipLeft, clipTop, clipRight, clipBottom);
+        // translate in by our padding
+        /* shortcircuit calling getVerticaOffset() */
+        int mGravity = getGravity();
+        int voffsetText = 0;
+        if ((mGravity & Gravity.VERTICAL_GRAVITY_MASK) != Gravity.TOP) {
+            //反射处理Gravity
+            voffsetText = _getVerticalOffset(false);
+        }
+        canvas.translate(compoundPaddingLeft, extendedPaddingTop + voffsetText);
+
+//        canvas.translate(compoundPaddingLeft, extendedPaddingTop);
+        //处理文字颜色
+        TextPaint textPaint = getPaint();
+        textPaint.setColor(getCurrentTextColor());
         //水平跑马灯
         if (mOrientation == HORIZONTAL) {
             // 判断跑马灯是否启动
@@ -230,10 +356,15 @@ public class MarqueeTextView extends AppCompatTextView {
     @Override
     protected float getRightFadingEdgeStrength() {
         if (mOrientation == HORIZONTAL && mMarquee != null && !mMarquee.isStopped()) {
-            final Marquee marquee = mMarquee;
-            final float maxFadeScroll = marquee.getMaxFadeScroll();
-            final float scroll = marquee.getScroll();
-            return (maxFadeScroll - scroll) / getHorizontalFadingEdgeLength();
+            if (mMarquee.shouldDrawFade()) {
+                final Marquee marquee = mMarquee;
+                final float maxFadeScroll = marquee.getMaxFadeScroll();
+                final float scroll = marquee.getScroll();
+                return (maxFadeScroll - scroll) / getHorizontalFadingEdgeLength();
+            } else {
+                return 0.0F;
+            }
+
         }
         return super.getRightFadingEdgeStrength();
     }
@@ -256,14 +387,19 @@ public class MarqueeTextView extends AppCompatTextView {
     protected float getBottomFadingEdgeStrength() {
         if (mOrientation == VERTICAL && mMarquee != null && !mMarquee.isStopped()) {
             final Marquee marquee = mMarquee;
-            final float maxFadeScroll = marquee.getMaxFadeScroll();
-            final float scroll = marquee.getScroll();
-            return (maxFadeScroll - scroll) / getVerticalFadingEdgeLength();
+            if (mMarquee.shouldDrawFade()) {
+                final float maxFadeScroll = marquee.getMaxFadeScroll();
+                final float scroll = marquee.getScroll();
+                return (maxFadeScroll - scroll) / getVerticalFadingEdgeLength();
+            } else {
+                return 0.0F;
+            }
+
         }
         return super.getBottomFadingEdgeStrength();
     }
 
-    private static final class Marquee {
+    public static final class Marquee {
         //重跑时间间隔
         private static final int MARQUEE_DELAY = 1200;
         //跑动速度
@@ -298,14 +434,69 @@ public class MarqueeTextView extends AppCompatTextView {
         private float mScroll;
         // 最后一次跑动时间，单位毫秒
         private long mLastAnimationMs;
+        //重跑时间间隔
+        private int marqueeDelay;
+        //跑动速度
+        private int marqueeDpPerSecond;
+        //是否绘制淡入淡出
+        private boolean shouldDrawFade;
 
-        Marquee(MarqueeTextView v) {
-            final float density = v.getContext().getResources().getDisplayMetrics().density;
+        Marquee(Builder builder) {
+            final float density = builder.marqueeTextView.getContext().getResources().getDisplayMetrics().density;
+            this.marqueeDelay = builder.marqueeDelay;
+            this.marqueeDpPerSecond = builder.marqueeDpPerSecond;
+            this.shouldDrawFade = builder.shouldDrawFade;
+            this.mRepeatLimit = builder.repeatLimit;
+
             // 计算每次跑多长距离
-            mPixelsPerSecond = MARQUEE_DP_PER_SECOND * density;
-            mView = new WeakReference<>(v);
+            mPixelsPerSecond = marqueeDpPerSecond * density;
+            mView = new WeakReference<>(builder.marqueeTextView);
             mChoreographer = Choreographer.getInstance();
         }
+
+        public static final class Builder {
+            private int marqueeDelay = MARQUEE_DELAY;
+            //跑动速度
+            private int marqueeDpPerSecond = MARQUEE_DP_PER_SECOND;
+            //是否绘制淡入淡出
+            private boolean shouldDrawFade = false;
+            //-1无限次重复
+            private int repeatLimit = -1;
+            private MarqueeTextView marqueeTextView;
+
+            public Builder() {
+            }
+
+            public Builder marqueeDelay(int marqueeDelay) {
+                this.marqueeDelay = marqueeDelay;
+                return this;
+            }
+
+            public Builder marqueeDpPerSecond(int marqueeDpPerSecond) {
+                this.marqueeDpPerSecond = marqueeDpPerSecond;
+                return this;
+            }
+
+            public Builder shouldDrawFade(boolean shouldDrawFade) {
+                this.shouldDrawFade = shouldDrawFade;
+                return this;
+            }
+
+            public Builder repeatLimit(int repeatLimit) {
+                this.repeatLimit = repeatLimit;
+                return this;
+            }
+
+            Builder marqueeTextView(MarqueeTextView marqueeTextView) {
+                this.marqueeTextView = marqueeTextView;
+                return this;
+            }
+
+            public Marquee build() {
+                return new Marquee(this);
+            }
+        }
+
 
         // 帧率回调，用于跑马灯跑动
         private final Choreographer.FrameCallback mTickCallback = frameTimeNanos -> tick();
@@ -376,7 +567,7 @@ public class MarqueeTextView extends AppCompatTextView {
                 if (mScroll > mMaxScroll) {
                     mScroll = mMaxScroll;
                     // 发送重新开始跑动事件
-                    mChoreographer.postFrameCallbackDelayed(mRestartCallback, MARQUEE_DELAY);
+                    mChoreographer.postFrameCallbackDelayed(mRestartCallback, marqueeDelay);
                 } else {
                     // 发送下一次跑动事件
                     mChoreographer.postFrameCallback(mTickCallback);
@@ -466,11 +657,15 @@ public class MarqueeTextView extends AppCompatTextView {
         }
 
         boolean shouldDrawLeftFade() {
-            return mScroll <= mFadeStop;
+            return shouldDrawFade && mScroll <= mFadeStop;
         }
 
         boolean shouldDrawTopFade() {
-            return mScroll <= mFadeStop;
+            return shouldDrawFade && mScroll <= mFadeStop;
+        }
+
+        boolean shouldDrawFade() {
+            return shouldDrawFade;
         }
 
         // 判断是否可以绘制重影文本

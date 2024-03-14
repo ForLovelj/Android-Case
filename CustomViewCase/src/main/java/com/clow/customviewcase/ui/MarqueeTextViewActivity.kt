@@ -26,12 +26,18 @@ class MarqueeTextViewActivity: BaseActivity<ActivityMarqueeTextViewBinding>() {
         mViewBinding.btn.setOnClickListener {
             it.isSelected = !it.isSelected
             if (it.isSelected) {
+                mViewBinding.marqueeTextView.start(MarqueeTextView.Marquee.Builder()
+                    .marqueeDpPerSecond(30)
+                    .repeatLimit(3)
+                    .shouldDrawFade(true)
+                )
                 mViewBinding.btn.text = "停止"
             } else {
                 mViewBinding.btn.text = "开始"
+                mViewBinding.marqueeTextView.stop()
             }
-            mViewBinding.marqueeTextView.isMarquee = it.isSelected
         }
+        mViewBinding.marqueeTextView.isSelected  = true
 
 
         with(mViewBinding.recyclerView) {
@@ -55,15 +61,11 @@ class MarqueeAdapter: BaseQuickAdapter<String,BaseViewHolder>(R.layout.item_marq
     override fun convert(holder: BaseViewHolder, item: String) {
         val marqueeTextView = holder.getView<MarqueeTextView>(R.id.marqueeTextView)
         marqueeTextView.text = item
-        marqueeTextView.post {
-
-
-            marqueeTextView.isMarquee = true
-        }
+        marqueeTextView.start()
     }
 
     override fun onViewRecycled(holder: BaseViewHolder) {
         val marqueeTextView = holder.getView<MarqueeTextView>(R.id.marqueeTextView)
-        marqueeTextView.isMarquee = false
+        marqueeTextView.stop()
     }
 }
