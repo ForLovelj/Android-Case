@@ -2,11 +2,11 @@ package com.clow.customviewcase
 
 import android.content.Intent
 import android.os.Bundle
-import com.chad.library.adapter.base.listener.OnItemClickListener
 import com.clow.baselib.base.BaseActivity
 import com.clow.customviewcase.adapter.StringAdapter
 import com.clow.customviewcase.databinding.ActivityMainBinding
 import com.clow.customviewcase.ui.MarqueeTextViewActivity
+import com.clow.customviewcase.ui.TestViewActivity
 import com.clow.customviewcase.ui.canvas.CanvasCaseActivity
 import com.clow.customviewcase.ui.paint.PaintCaseActivity
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -17,7 +17,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         StringAdapter()
     }
 
-    private val mNav = mutableListOf("Canvas","Paint","MarqueeTextViewActivity")
+    private val mNav = mutableListOf("Canvas","Paint","MarqueeTextViewActivity","TestViewActivity")
 
     override fun layoutId() = R.layout.activity_main
 
@@ -38,6 +38,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 }
                 "MarqueeTextViewActivity" -> {
                     startActivity(Intent(mContext, MarqueeTextViewActivity::class.java))
+                }
+                "TestViewActivity" -> {
+                    startActivity(Intent(mContext, TestViewActivity::class.java))
                 }
             }
         }
