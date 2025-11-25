@@ -2,14 +2,16 @@ package com.clow.customviewcase.widget;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
+
+import com.clow.customviewcase.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +22,20 @@ import java.util.List;
  * Date: 2025/11/18.
  */
 public class CircularRingMenuView extends View {
-    private static final int CENTER_BUTTON_RADIUS = 80;
-    private static final int RING_INNER_RADIUS = 100;
-    private static final int RING_OUTER_RADIUS = 300;
-    private static final int ANIMATION_DURATION = 300;
+
+    private  static final int ANIMATION_DURATION = 300;
+
+    private  float ringInnerRadius = 0;
+    private  float ringOuterRadius = 0;
+    private  float centerRadius = 80;//中心圆半径
+    private  int centerColor = 0xff2196F3;//中心圆颜色
+    private  float ringSize = 200;//圆环大小
+    private  float space = 20;//中心圆和圆环间距
+    private  float spaceAngle = 1;//menuItems 之间的分割角度
+    private  int selectedColor = 0xffFF9800; //选中圆环颜色
+    private  int labelTextColor = 0xffffffff; //文字颜色
+    private  float labelTextSize = 36f; //文字大小
+
 
     private Paint centerButtonPaint;
     private Paint ringPaint;
@@ -34,7 +46,7 @@ public class CircularRingMenuView extends View {
     private boolean isMenuExpanded = false;
     private int selectedMenuItem = -1;
 
-    private List<MenuItem> menuItems;
+    private List<MenuItem> menuItems = new ArrayList<>();
     private ValueAnimator expandAnimator;
     private float animationProgress = 0f;
 
@@ -44,14 +56,14 @@ public class CircularRingMenuView extends View {
         void onMenuItemClick(int position);
     }
 
-    private class MenuItem {
+    public static class MenuItem {
         String text;
         int color;
         float startAngle;
         float sweepAngle;
         RectF ringBounds;
 
-        MenuItem(String text, int color) {
+        public MenuItem(String text, int color) {
             this.text = text;
             this.color = color;
             this.ringBounds = new RectF();
@@ -59,53 +71,65 @@ public class CircularRingMenuView extends View {
     }
 
     public CircularRingMenuView(Context context) {
-        super(context);
-        init();
+        this(context, null);
     }
 
     public CircularRingMenuView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context,attrs);
     }
 
-    private void init() {
+    private void init(Context context, AttributeSet attrs) {
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.CircularRingMenuView);
+        centerRadius = ta.getDimension(R.styleable.CircularRingMenuView_centerRadius, centerRadius);
+        centerColor = ta.getColor(R.styleable.CircularRingMenuView_centerColor,centerColor);
+        ringSize = ta.getDimension(R.styleable.CircularRingMenuView_ringSize, ringSize);
+        space = ta.getDimension(R.styleable.CircularRingMenuView_space,space);
+        labelTextSize = ta.getDimension(R.styleable.CircularRingMenuView_labelTextSize,labelTextSize);
+        labelTextColor = ta.getColor(R.styleable.CircularRingMenuView_labelTextSize,labelTextColor);
+        selectedColor = ta.getColor(R.styleable.CircularRingMenuView_selectedColor,selectedColor);
+        ta.recycle();
+
         // 中心按钮画笔
         centerButtonPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        centerButtonPaint.setColor(Color.parseColor("#2196F3"));
+        centerButtonPaint.setColor(centerColor);
         centerButtonPaint.setStyle(Paint.Style.FILL);
 
         // 环形菜单项画笔
+        ringInnerRadius = centerRadius + space;
+        ringOuterRadius = ringInnerRadius + ringSize;
         ringPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         ringPaint.setStyle(Paint.Style.STROKE);
-        ringPaint.setStrokeWidth(RING_OUTER_RADIUS - RING_INNER_RADIUS);
+        ringPaint.setStrokeWidth(ringSize);
 
         // 选中状态环形画笔
         selectedRingPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         selectedRingPaint.setStyle(Paint.Style.STROKE);
-        selectedRingPaint.setStrokeWidth(RING_OUTER_RADIUS - RING_INNER_RADIUS);
-        selectedRingPaint.setColor(Color.parseColor("#FF9800"));
+        selectedRingPaint.setStrokeWidth(ringSize);
+        selectedRingPaint.setColor(selectedColor);
 
         // 文字画笔
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        textPaint.setColor(Color.WHITE);
-        textPaint.setTextSize(36);
+        textPaint.setColor(labelTextColor);
+        textPaint.setTextSize(labelTextSize);
         textPaint.setTextAlign(Paint.Align.CENTER);
 
-        // 初始化菜单项
-        menuItems = new ArrayList<>();
-        menuItems.add(new MenuItem("A", Color.parseColor("#F44336")));
-        menuItems.add(new MenuItem("B", Color.parseColor("#4CAF50")));
-        menuItems.add(new MenuItem("C", Color.parseColor("#2196F3")));
-        menuItems.add(new MenuItem("D", Color.parseColor("#FFC107")));
-        menuItems.add(new MenuItem("E", Color.parseColor("#33C107")));
 
-        // 设置每个菜单项的起始角度和扫过的角度
-        float anglePerItem = 360f / menuItems.size();
-        for (int i = 0; i < menuItems.size(); i++) {
-            MenuItem item = menuItems.get(i);
-            item.startAngle = i * anglePerItem;
-            item.sweepAngle = anglePerItem - 1; // 留出1度的间隙
-        }
+//        // 初始化菜单项
+//        menuItems = new ArrayList<>();
+//        menuItems.add(new MenuItem("A", Color.parseColor("#F44336")));
+//        menuItems.add(new MenuItem("B", Color.parseColor("#4CAF50")));
+//        menuItems.add(new MenuItem("C", Color.parseColor("#2196F3")));
+//        menuItems.add(new MenuItem("D", Color.parseColor("#FFC107")));
+//        menuItems.add(new MenuItem("E", Color.parseColor("#33C107")));
+
+//        // 设置每个菜单项的起始角度和扫过的角度
+//        float anglePerItem = 360f / menuItems.size();
+//        for (int i = 0; i < menuItems.size(); i++) {
+//            MenuItem item = menuItems.get(i);
+//            item.startAngle = i * anglePerItem;
+//            item.sweepAngle = anglePerItem - 1; // 留出1度的间隙
+//        }
 
         setupAnimations();
     }
@@ -121,6 +145,17 @@ public class CircularRingMenuView extends View {
     }
 
     @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        if (widthMode != MeasureSpec.EXACTLY || heightMode != MeasureSpec.EXACTLY) {
+            //如果没有设置准确尺寸  指定尺寸
+            setMeasuredDimension((int) ringOuterRadius*2, (int) ringOuterRadius*2);
+        }
+    }
+
+    @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         centerX = w / 2f;
@@ -129,9 +164,9 @@ public class CircularRingMenuView extends View {
     }
 
     private void updateRingBounds() {
-        float currentInnerRadius = RING_INNER_RADIUS * animationProgress;
-        float currentOuterRadius = RING_OUTER_RADIUS * animationProgress;
-        float stoke = (RING_OUTER_RADIUS - RING_INNER_RADIUS)/2;
+        float currentInnerRadius = ringInnerRadius * animationProgress;
+        float currentOuterRadius = ringOuterRadius * animationProgress;
+        float stoke = (ringOuterRadius - ringInnerRadius)/2;
 
         for (MenuItem item : menuItems) {
             item.ringBounds.set(
@@ -148,7 +183,7 @@ public class CircularRingMenuView extends View {
         super.onDraw(canvas);
 
         // 绘制中心按钮
-        canvas.drawCircle(centerX, centerY, CENTER_BUTTON_RADIUS, centerButtonPaint);
+        canvas.drawCircle(centerX, centerY, centerRadius, centerButtonPaint);
 
         // 绘制环形菜单项
         if (isMenuExpanded || animationProgress > 0) {
@@ -182,7 +217,7 @@ public class CircularRingMenuView extends View {
     private void drawTextOnArc(Canvas canvas, MenuItem item, int position) {
         // 计算文字在环形中间位置的角度
         float middleAngle = item.startAngle + item.sweepAngle / 2;
-        float textRadius = (RING_INNER_RADIUS + RING_OUTER_RADIUS) / 2 * animationProgress;
+        float textRadius = (ringInnerRadius + ringOuterRadius) / 2 * animationProgress;
 
         // 将角度转换为弧度
         double angleRad = Math.toRadians(middleAngle);
@@ -233,7 +268,7 @@ public class CircularRingMenuView extends View {
 
     private boolean isInCenterButton(float x, float y) {
         float distance = (float) Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
-        return distance <= CENTER_BUTTON_RADIUS;
+        return distance <= centerRadius;
     }
 
     private void checkMenuItemSelection(float x, float y) {
@@ -250,8 +285,8 @@ public class CircularRingMenuView extends View {
         float touchDistance = (float) Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
 
         // 检查触摸点是否在环形区域内
-        float currentInnerRadius = RING_INNER_RADIUS * animationProgress;
-        float currentOuterRadius = RING_OUTER_RADIUS * animationProgress;
+        float currentInnerRadius = ringInnerRadius * animationProgress;
+        float currentOuterRadius = ringOuterRadius * animationProgress;
 
         if (touchDistance >= currentInnerRadius && touchDistance <= currentOuterRadius) {
             // 检查触摸点落在哪个菜单项的角度范围内
@@ -330,7 +365,7 @@ public class CircularRingMenuView extends View {
         for (int i = 0; i < menuItems.size(); i++) {
             MenuItem item = menuItems.get(i);
             item.startAngle = i * anglePerItem;
-            item.sweepAngle = anglePerItem - 10;
+            item.sweepAngle = anglePerItem - spaceAngle;
         }
 
         invalidate();

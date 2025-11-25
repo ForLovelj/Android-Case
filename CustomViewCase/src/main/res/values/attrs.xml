@@ -7,4 +7,14 @@
             <enum name="vertical" value="1" />
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="CircularRingMenuView">
+        <attr name="labelTextColor" format="color" />
+        <attr name="labelTextSize" format="dimension" />
+        <attr name="centerColor" format="color" />
+        <attr name="centerRadius" format="dimension" />
+        <attr name="ringSize" format="dimension" />
+        <attr name="space" format="dimension" />
+        <attr name="selectedColor" format="color" />
+    </declare-styleable>
 </resources>
