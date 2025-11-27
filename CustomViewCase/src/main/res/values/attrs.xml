@@ -15,6 +15,7 @@
         <attr name="centerRadius" format="dimension" />
         <attr name="ringSize" format="dimension" />
         <attr name="space" format="dimension" />
+        <attr name="spaceAngle" format="integer" />
         <attr name="selectedColor" format="color" />
     </declare-styleable>
 </resources>

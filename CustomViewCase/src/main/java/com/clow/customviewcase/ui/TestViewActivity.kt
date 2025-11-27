@@ -23,19 +23,19 @@ class TestViewActivity: BaseActivity<ActivityTestViewBinding>() {
 
         // 初始化菜单项
         val menuItems = ArrayList<CircularRingMenuView.MenuItem>()
-        menuItems.add(CircularRingMenuView.MenuItem("A", Color.parseColor("#F44336")))
-        menuItems.add(CircularRingMenuView.MenuItem("B", Color.parseColor("#4CAF50")))
-        menuItems.add(CircularRingMenuView.MenuItem("C", Color.parseColor("#2196F3")))
-        menuItems.add(CircularRingMenuView.MenuItem("D", Color.parseColor("#FFC107")))
-        menuItems.add(CircularRingMenuView.MenuItem("E", Color.parseColor("#33C107")))
+        menuItems.add(CircularRingMenuView.MenuItem("选项A", Color.parseColor("#F44336")))
+        menuItems.add(CircularRingMenuView.MenuItem("选项B", Color.parseColor("#4CAF50")))
+        menuItems.add(CircularRingMenuView.MenuItem("选项C", Color.parseColor("#2196F3")))
+        menuItems.add(CircularRingMenuView.MenuItem("选项D", Color.parseColor("#FFC107")))
+        menuItems.add(CircularRingMenuView.MenuItem("选项E", Color.parseColor("#00DBFF")))
         mViewBinding.circularRingMenuView.setMenuItems(
-            listOf("A","B","C","D","E"),
+            listOf("选项A","选项B","选项C","选项D","选项E"),
             listOf(
                 Color.parseColor("#F44336"),
                 Color.parseColor("#4CAF50"),
                 Color.parseColor("#2196F3"),
                 Color.parseColor("#FFC107"),
-                Color.parseColor("#33C107")
+                Color.parseColor("#00DBFF")
             )
         )
         mViewBinding.circularRingMenuView.setOnMenuItemClickListener { position->

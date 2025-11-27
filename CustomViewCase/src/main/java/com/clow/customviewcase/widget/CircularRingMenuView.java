@@ -31,7 +31,7 @@ public class CircularRingMenuView extends View {
     private  int centerColor = 0xff2196F3;//中心圆颜色
     private  float ringSize = 200;//圆环大小
     private  float space = 20;//中心圆和圆环间距
-    private  float spaceAngle = 1;//menuItems 之间的分割角度
+    private  int spaceAngle = 0;//menuItems 之间的分割角度
     private  int selectedColor = 0xffFF9800; //选中圆环颜色
     private  int labelTextColor = 0xffffffff; //文字颜色
     private  float labelTextSize = 36f; //文字大小
@@ -85,6 +85,7 @@ public class CircularRingMenuView extends View {
         centerColor = ta.getColor(R.styleable.CircularRingMenuView_centerColor,centerColor);
         ringSize = ta.getDimension(R.styleable.CircularRingMenuView_ringSize, ringSize);
         space = ta.getDimension(R.styleable.CircularRingMenuView_space,space);
+        spaceAngle = ta.getInt(R.styleable.CircularRingMenuView_spaceAngle,spaceAngle);
         labelTextSize = ta.getDimension(R.styleable.CircularRingMenuView_labelTextSize,labelTextSize);
         labelTextColor = ta.getColor(R.styleable.CircularRingMenuView_labelTextSize,labelTextColor);
         selectedColor = ta.getColor(R.styleable.CircularRingMenuView_selectedColor,selectedColor);
@@ -182,9 +183,6 @@ public class CircularRingMenuView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        // 绘制中心按钮
-        canvas.drawCircle(centerX, centerY, centerRadius, centerButtonPaint);
-
         // 绘制环形菜单项
         if (isMenuExpanded || animationProgress > 0) {
             updateRingBounds();
@@ -212,6 +210,10 @@ public class CircularRingMenuView extends View {
                 drawTextOnArc(canvas, item, i);
             }
         }
+
+        // 绘制中心按钮
+        canvas.drawCircle(centerX, centerY, centerRadius, centerButtonPaint);
+
     }
 
     private void drawTextOnArc(Canvas canvas, MenuItem item, int position) {
