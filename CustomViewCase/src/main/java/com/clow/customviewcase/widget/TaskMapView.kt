@@ -36,6 +36,8 @@ class TaskMapView @JvmOverloads constructor(
 
     // 虚线效果
     private val dashPathEffect = DashPathEffect(floatArrayOf(20f, 10f), 0f)
+    // 复用 Path 对象，避免在 onDraw 中创建
+    private val path = Path()
 
     // 节点尺寸
     private var nodeRadius = 0f
@@ -209,7 +211,7 @@ class TaskMapView @JvmOverloads constructor(
             }
 
             // 绘制Z字型连线
-            val path = Path()
+            path.rewind()
             path.moveTo(startNode.x, startNode.y)
             path.lineTo(endNode.x, endNode.y)
             canvas.drawPath(path, linePaint)
@@ -273,7 +275,7 @@ class TaskMapView @JvmOverloads constructor(
 
     // 绘制五角星的辅助方法
     private fun drawStar(canvas: Canvas, centerX: Float, centerY: Float, outerRadius: Float, paint: Paint) {
-        val path = Path()
+        path.rewind()
         val innerRadius = outerRadius / 2.5f // 内圆半径
 
         for (i in 0 until 5) {
