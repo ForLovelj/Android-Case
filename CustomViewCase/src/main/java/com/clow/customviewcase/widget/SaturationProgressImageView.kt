@@ -90,6 +90,13 @@ class SaturationProgressImageView @JvmOverloads constructor(
             invalidate()
         }
 
+    /**
+     * 根据当前分数和满分更新非线性视觉进度。
+     */
+    fun setScoreProgress(score: Float, maxScore: Float) {
+        progress = ScoreProgressMapper.toProgress(score, maxScore)
+    }
+
     override fun onDraw(canvas: Canvas) {
         if (drawable == null) return
 

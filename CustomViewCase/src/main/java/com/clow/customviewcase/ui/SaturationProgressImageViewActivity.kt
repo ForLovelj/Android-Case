@@ -29,13 +29,13 @@ class SaturationProgressImageViewActivity :
         )
 
         updateSaturation(mViewBinding.saturationSeekBar.progress)
-        updateProgress(mViewBinding.progressSeekBar.progress)
+        updateScore(mViewBinding.progressSeekBar.progress)
 
         mViewBinding.saturationSeekBar.setOnSeekBarChangeListener(
             seekBarChangeListener(::updateSaturation)
         )
         mViewBinding.progressSeekBar.setOnSeekBarChangeListener(
-            seekBarChangeListener(::updateProgress)
+            seekBarChangeListener(::updateScore)
         )
     }
 
@@ -59,13 +59,17 @@ class SaturationProgressImageViewActivity :
         )
     }
 
-    private fun updateProgress(progress: Int) {
-        mViewBinding.progressImage.progress = progress / PROGRESS_SCALE
-        mViewBinding.progressValue.text = getString(R.string.progress_image_progress_value, progress)
+    private fun updateScore(score: Int) {
+        mViewBinding.progressImage.setScoreProgress(score.toFloat(), MAX_SCORE)
+        mViewBinding.progressValue.text = getString(
+            R.string.progress_image_score_value,
+            score,
+            MAX_SCORE.toInt()
+        )
     }
 
     private companion object {
         const val SATURATION_SCALE = 100.0f
-        const val PROGRESS_SCALE = 100.0f
+        const val MAX_SCORE = 150.0f
     }
 }
