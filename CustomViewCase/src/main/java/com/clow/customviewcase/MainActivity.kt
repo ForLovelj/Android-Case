@@ -7,6 +7,7 @@ import com.clow.customviewcase.adapter.StringAdapter
 import com.clow.customviewcase.databinding.ActivityMainBinding
 import com.clow.customviewcase.ui.MarqueeTextViewActivity
 import com.clow.customviewcase.ui.SaturationImageViewActivity
+import com.clow.customviewcase.ui.SaturationProgressImageViewActivity
 import com.clow.customviewcase.ui.TestViewActivity
 import com.clow.customviewcase.ui.canvas.CanvasCaseActivity
 import com.clow.customviewcase.ui.paint.PaintCaseActivity
@@ -23,6 +24,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         "Paint",
         "MarqueeTextViewActivity",
         "SaturationImageViewActivity",
+        "SaturationProgressImageViewActivity",
         "TestViewActivity"
     )
 
@@ -48,6 +50,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 }
                 "SaturationImageViewActivity" -> {
                     startActivity(Intent(mContext, SaturationImageViewActivity::class.java))
+                }
+                "SaturationProgressImageViewActivity" -> {
+                    startActivity(Intent(mContext, SaturationProgressImageViewActivity::class.java))
                 }
                 "TestViewActivity" -> {
                     startActivity(Intent(mContext, TestViewActivity::class.java))

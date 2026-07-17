@@ -11,7 +11,7 @@ import androidx.appcompat.widget.AppCompatImageView
  * Des: 设置图片饱和度
  * Date: 2026/7/17.
  */
-class SaturationImageView @JvmOverloads constructor(
+open class SaturationImageView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
