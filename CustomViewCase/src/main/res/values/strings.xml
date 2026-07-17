@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">CustomViewCase</string>
+    <string name="saturation_page_title">图片饱和度</string>
+    <string name="beauty_image_description">饱和度调整示例图片</string>
+    <string name="saturation_value">饱和度：%1$s</string>
+    <string name="saturation_default_value">饱和度：1.00</string>
+    <string name="saturation_range_hint">0.00 黑白　　1.00 原图　　2.00 艳丽</string>
 </resources>

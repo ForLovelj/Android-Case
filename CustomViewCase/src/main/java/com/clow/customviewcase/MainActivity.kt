@@ -6,6 +6,7 @@ import com.clow.baselib.base.BaseActivity
 import com.clow.customviewcase.adapter.StringAdapter
 import com.clow.customviewcase.databinding.ActivityMainBinding
 import com.clow.customviewcase.ui.MarqueeTextViewActivity
+import com.clow.customviewcase.ui.SaturationImageViewActivity
 import com.clow.customviewcase.ui.TestViewActivity
 import com.clow.customviewcase.ui.canvas.CanvasCaseActivity
 import com.clow.customviewcase.ui.paint.PaintCaseActivity
@@ -17,7 +18,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         StringAdapter()
     }
 
-    private val mNav = mutableListOf("Canvas","Paint","MarqueeTextViewActivity","TestViewActivity")
+    private val mNav = mutableListOf(
+        "Canvas",
+        "Paint",
+        "MarqueeTextViewActivity",
+        "SaturationImageViewActivity",
+        "TestViewActivity"
+    )
 
     override fun layoutId() = R.layout.activity_main
 
@@ -38,6 +45,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 }
                 "MarqueeTextViewActivity" -> {
                     startActivity(Intent(mContext, MarqueeTextViewActivity::class.java))
+                }
+                "SaturationImageViewActivity" -> {
+                    startActivity(Intent(mContext, SaturationImageViewActivity::class.java))
                 }
                 "TestViewActivity" -> {
                     startActivity(Intent(mContext, TestViewActivity::class.java))
