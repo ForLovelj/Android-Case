@@ -12,4 +12,7 @@
     <string name="progress_image_score_value">分数：%1$d/%2$d</string>
     <string name="progress_image_score_default_value">分数：50/150</string>
     <string name="progress_image_direction_hint">进度方向：从下到上</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
 </resources>

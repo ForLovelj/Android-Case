@@ -31,7 +31,8 @@ ext {
             viewpager2  : '1.0.0',
             cardview  : '1.0.0',
             flexbox  : '3.0.0',
-            navigation :'2.5.2'
+            navigation :'2.5.2',
+            glide      : '4.16.0'
     ]
 
     //jetpack
@@ -98,6 +99,7 @@ ext {
     //依赖第三方配置
     dependencies = [
             //glide图片加载
+            glide                       : "com.github.bumptech.glide:glide:${versions['glide']}",
             //material-dialogs
             //Utils
             utilcodex                   : 'com.blankj:utilcodex:1.31.0',

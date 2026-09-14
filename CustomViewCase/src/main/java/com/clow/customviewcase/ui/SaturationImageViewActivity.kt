@@ -2,6 +2,7 @@ package com.clow.customviewcase.ui
 
 import android.os.Bundle
 import android.widget.SeekBar
+import com.bumptech.glide.Glide
 import com.clow.baselib.base.BaseActivity
 import com.clow.customviewcase.R
 import com.clow.customviewcase.databinding.ActivitySaturationImageViewBinding
@@ -16,6 +17,10 @@ class SaturationImageViewActivity : BaseActivity<ActivitySaturationImageViewBind
 
     override fun initView(savedInstanceState: Bundle?) {
         updateSaturation(mViewBinding.saturationSeekBar.progress)
+        Glide.with(this)
+            .load(SATURATION_IMAGE_URL)
+            .into(mViewBinding.saturationImage)
+
         mViewBinding.saturationSeekBar.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -40,5 +45,7 @@ class SaturationImageViewActivity : BaseActivity<ActivitySaturationImageViewBind
 
     private companion object {
         const val SATURATION_SCALE = 100.0f
+        const val SATURATION_IMAGE_URL =
+            "https://filecdn.ailecheng.com/20260615/07bcf16d8e4ae07d621999828a9837f3.png"
     }
 }
